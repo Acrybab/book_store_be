@@ -182,15 +182,15 @@ export class BookService {
     const cartDetail = await this.cartRepository.find({
       where: {
         user: { id: userId },
-        book: {
-          orderItems: {
-            order: {
-              payments: {
-                status: 'UNPAID',
-              },
-            },
-          },
-        },
+        // book: {
+        //   orderItems: {
+        //     order: {
+        //       payments: {
+        //         status: 'UNPAID',
+        //       },
+        //     },
+        //   },
+        // },
       },
       relations: ['book', 'user'],
     });
