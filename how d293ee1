@@ -1,0 +1,57 @@
+[33mcommit 68d6f8c1e318e9287ec0d8dc566552e98b1f4945[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Mon Dec 8 11:30:00 2025 +0700
+
+    a
+
+[33mcommit 64a130e6b23bbb123f1c8e6f79165845078a6eaf[m
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Mon Dec 8 11:19:58 2025 +0700
+
+    fix authoriztion error
+
+[33mcommit c4e45753e5ce752ea05db78b1fc3fad032cadc86[m
+Merge: 2376f3b 9269646
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Mon Dec 8 11:07:21 2025 +0700
+
+    Merge branch 'main' of https://gitlab.com/trongkhang1/bookstorebe into trong_khang
+
+[33mcommit 2376f3b07bb14baaaaa424d77b1dc24b8eb3777f[m
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Mon Dec 8 11:04:49 2025 +0700
+
+    a
+
+[33mcommit 9269646283d5ec528e348b68933f4031e5aa57f3[m
+Merge: 3c05db6 e331f52
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Tue Aug 19 08:46:04 2025 +0000
+
+    Merge branch 'trong_khang' into 'main'
+    
+    completed
+    
+    See merge request trongkhang1/bookstorebe!1
+
+[33mcommit e331f5252884085a9e019ce61474551301500be9[m
+Merge: d293ee1 3c05db6
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Tue Aug 19 08:43:53 2025 +0000
+
+    Merge branch 'main' into 'trong_khang'
+    
+    # Conflicts:
+    #   README.md
+
+[33mcommit d293ee194e17a25dc8401b868d07125846428d2c[m
+Author: KhuongKayyyyy <zzkhngzz@gmail.com>
+Date:   Tue Aug 19 15:39:15 2025 +0700
+
+    completed
+
+[33mcommit 3c05db69846a21b23d2cd7fb283e0aeef9f89b96[m
+Author: Acrybab <khangtntce171659@fpt.edu.vn>
+Date:   Fri Aug 8 06:42:49 2025 +0000
+
+    Initial commit
