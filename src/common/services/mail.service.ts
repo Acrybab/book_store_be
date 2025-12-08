@@ -11,6 +11,8 @@ export class MailService {
   }
 
   async sendHTMLEmail({ to, subject, htmlContent }: SendHTMLEmail): Promise<void> {
+    console.log(process.env.MAIL_FROM, 'aaaa');
+
     const msg = {
       to,
       from: {
