@@ -18,8 +18,7 @@ export class User {
 
   @Column({ nullable: true })
   password: string;
-  @Column()
-  shippingAddressId: number;
+
   @Column({ nullable: true })
   phoneNumber: string;
   @Column({ nullable: true })
