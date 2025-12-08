@@ -5,10 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entities';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import nodemailer from 'nodemailer';
 
 import bcrypt from 'bcrypt';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
+import { MailService } from 'src/common/services/mail.service';
+import { htmlContent } from 'src/common/services/htmlcontent';
 
 type SignUpParams = {
   name: string;
@@ -22,6 +23,7 @@ type SignUpParams = {
 export class UserService {
   constructor(
     private jwtService: JwtService,
+    private readonly mailService: MailService,
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -72,7 +74,11 @@ export class UserService {
       expiresIn: '1d',
       secret: process.env.MY_SECRET_KEY || 'default-secret',
     });
-    await this.sendEmail(user.email);
+    await this.mailService.sendHTMLEmail({
+      to: email as string,
+      subject: 'Welcome to Book Store!',
+      htmlContent: htmlContent(email as string),
+    });
     return {
       data: {
         message: 'Sign Up Successful',
@@ -185,115 +191,5 @@ export class UserService {
     }
 
     return user;
-  }
-
-  async sendEmail(email: string) {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: 'trongkhangtn08032003@gmail.com',
-        pass: 'ganw wmve rkjy hysy',
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.MAIL_USER,
-      to: email,
-      subject: 'Chào mừng bạn đến với chúng tôi!',
-      html: `
-    <!DOCTYPE html>
-    <html lang="vi">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chào mừng!</title>
-    </head>
-    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="padding: 0;">
-                    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                        
-                        <!-- Header -->
-                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; text-align: center;">
-                            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 300;">
-                                Chào mừng bạn!
-                            </h1>
-                            <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-                                Cảm ơn bạn đã tham gia cùng chúng tôi
-                            </p>
-                        </div>
-
-                        <!-- Content -->
-                        <div style="padding: 40px 30px;">
-                            <div style="text-align: center; margin-bottom: 30px;">
-                                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-    <div style="color: white; font-size: 36px; line-height: 1; display: flex; align-items: center; justify-content: center;">✓</div>
-</div>
-                                <h2 style="color: #333333; margin: 0 0 15px 0; font-size: 24px; font-weight: 400;">
-                                    Đăng ký thành công!
-                                </h2>
-                                <p style="color: #666666; margin: 0; font-size: 16px; line-height: 1.6;">
-                                    Tài khoản của bạn đã được tạo thành công. Chúng tôi rất vui mừng được chào đón bạn vào cộng đồng của chúng tôi.
-                                </p>
-                            </div>
-
-                            <!-- CTA Button -->
-                            <div style="text-align: center; margin: 30px 0;">
-                                <a href="#" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-size: 16px; font-weight: 500; display: inline-block; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
-                                    Bắt đầu ngay
-                                </a>
-                            </div>
-
-                            <!-- Features -->
-                            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 30px 0;">
-                                <h3 style="color: #333333; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
-                                    Những gì bạn có thể làm:
-                                </h3>
-                                <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-                                    <div style="flex: 1; min-width: 150px; text-align: center; padding: 10px;">
-                                        <div style="color: #667eea; font-size: 24px; margin-bottom: 10px;">🚀</div>
-                                        <p style="color: #666666; margin: 0; font-size: 14px;">Trải nghiệm tuyệt vời</p>
-                                    </div>
-                                    <div style="flex: 1; min-width: 150px; text-align: center; padding: 10px;">
-                                        <div style="color: #667eea; font-size: 24px; margin-bottom: 10px;">🎯</div>
-                                        <p style="color: #666666; margin: 0; font-size: 14px;">Tính năng độc quyền</p>
-                                    </div>
-                                    <div style="flex: 1; min-width: 150px; text-align: center; padding: 10px;">
-                                        <div style="color: #667eea; font-size: 24px; margin-bottom: 10px;">💬</div>
-                                        <p style="color: #666666; margin: 0; font-size: 14px;">Hỗ trợ 24/7</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Contact Info -->
-                            <div style="text-align: center; margin-top: 30px;">
-                                <p style="color: #999999; margin: 0; font-size: 14px;">
-                                    Có câu hỏi? <a href="mailto:support@example.com" style="color: #667eea; text-decoration: none;">Liên hệ với chúng tôi</a>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Footer -->
-                        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
-                            <p style="color: #999999; margin: 0 0 10px 0; font-size: 12px;">
-                                © 2025 Công ty của bạn. Tất cả quyền được bảo lưu.
-                            </p>
-                            <div style="margin-top: 15px;">
-                                <a href="#" style="color: #667eea; text-decoration: none; margin: 0 10px; font-size: 12px;">Chính sách bảo mật</a>
-                                <a href="#" style="color: #667eea; text-decoration: none; margin: 0 10px; font-size: 12px;">Điều khoản sử dụng</a>
-                                <a href="#" style="color: #667eea; text-decoration: none; margin: 0 10px; font-size: 12px;">Hủy đăng ký</a>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </body>
-    </html>
-  `,
-    });
   }
 }

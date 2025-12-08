@@ -30,6 +30,7 @@ import { ShippingAddressController } from './shippingAddress/controllers/shippin
 import { ShippingAddressModule } from './shippingAddress/shipping.moudle';
 import { ConfigModule } from '@nestjs/config';
 import { PayosModule } from './payOS/payos.module';
+import { CommonModule } from './common/commo.module';
 // import { PaymentController } from './vnpay/controller/payment.controller';
 
 @Module({
@@ -59,6 +60,7 @@ import { PayosModule } from './payOS/payos.module';
     RatingModule,
     ShippingAddressModule,
     PayosModule,
+    CommonModule,
     // AuthModule,
   ],
 

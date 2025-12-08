@@ -8,6 +8,7 @@ import { GoogleStrategy } from '../auth/google.strategy';
 // import { AuthModule } from '../auth/auth.module';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
+import { MailService } from 'src/common/services/mail.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.en
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtService, GoogleStrategy, JwtStrategy],
+  providers: [UserService, JwtService, GoogleStrategy, JwtStrategy, MailService],
   exports: [UserService],
 })
 export class UserModule {}

@@ -15,6 +15,7 @@ import { OrderService } from 'src/order/services/order.service';
 import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
 import { Payment } from 'src/payment/entities/payment.entities';
 import { PayosService } from 'src/payOS/services/payOS.service';
+import { MailService } from 'src/common/services/mail.service';
 // import { FirebaseService } from 'src/firebase/services/firebase.service';
 // import { PaymentService } from 'src/vnpay/services/vnpay.service';
 
@@ -23,7 +24,7 @@ import { PayosService } from 'src/payOS/services/payOS.service';
     TypeOrmModule.forFeature([Book, FavoriteBook, User, Cart, Category, ShippingAddress, Order, OrderItem, Payment]),
   ],
   controllers: [BookController],
-  providers: [BookService, UserService, OrderService, PayosService],
+  providers: [BookService, UserService, OrderService, PayosService, MailService],
   exports: [BookService],
 })
 export class BookModule {}
