@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,7 +25,6 @@ import { PayOSController } from './payOS/Controller/payOS.controller';
 import { Rating } from './rating/entities/rating.entities';
 import { RatingController } from './rating/controllers/rating.controller';
 import { RatingModule } from './rating/rating.module';
-import { CorsMiddleware } from './cors.middleware';
 import { ShippingAddress } from './shippingAddress/entities/shippingAddress.entity';
 import { ShippingAddressController } from './shippingAddress/controllers/shippingAddress.controller';
 import { ShippingAddressModule } from './shippingAddress/shipping.moudle';
@@ -76,8 +75,4 @@ import { PayosModule } from './payOS/payos.module';
   ],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorsMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
