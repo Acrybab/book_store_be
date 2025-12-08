@@ -192,7 +192,7 @@ export class BookService {
         //   },
         // },
       },
-      relations: ['book', 'user'],
+      relations: ['book', 'user', 'book.orderItems', 'book.orderItems.order', 'book.orderItems.order.payments'],
     });
 
     return {
