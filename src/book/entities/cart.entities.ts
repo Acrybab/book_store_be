@@ -13,6 +13,8 @@ export class Cart {
   userId: number;
   @Column()
   bookId: number;
+  @Column()
+  orderStatus: string;
   @Column({ default: true })
   selected: boolean;
   @Column({ default: 1 })

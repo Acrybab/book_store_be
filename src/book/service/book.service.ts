@@ -152,6 +152,7 @@ export class BookService {
       bookId: book?.id,
       user: user as User,
       book: book as Book,
+      orderStatus: 'PENDING',
       selected: true,
       quantity,
     });
@@ -182,15 +183,16 @@ export class BookService {
     const cartDetail = await this.cartRepository.find({
       where: {
         user: { id: userId },
-        // book: {
-        //   orderItems: {
-        //     order: {
-        //       payments: {
-        //         status: 'UNPAID',
-        //       },
-        //     },
-        //   },
-        // },
+        orderStatus: 'PENDING',
+        book: {
+          orderItems: {
+            order: {
+              payments: {
+                status: 'UNPAID',
+              },
+            },
+          },
+        },
       },
       relations: ['book', 'user', 'book.orderItems', 'book.orderItems.order', 'book.orderItems.order.payments'],
     });
