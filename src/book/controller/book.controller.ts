@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import {
   Body,
   Controller,
@@ -11,7 +10,6 @@ import {
   Post,
   Query,
   Req,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,10 +19,9 @@ import { BookService } from '../service/book.service';
 import { AddToCartDto, CreateBookDto } from '../dto/book.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import path, { extname } from 'path';
+import { extname } from 'path';
 // import { Response } from 'express';
 // import path from 'path/posix';
-import * as fs from 'fs';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 
 @Controller('books')
@@ -116,18 +113,18 @@ export class BookController {
       cartItem: addedBookToCart,
     };
   }
-  @Get('photo/:photoName')
-  getBookPhoto(@Param('photoName') photoName: string, @Res() res) {
-    // return this.bookService.getBookPhoto(photoName).then((fileBuffer) => {
-    //   res.setHeader('Content-Type', 'image/jpeg'); // Hoặc loại MIME phù hợp với ảnh của bạn
-    //   res.send(fileBuffer);
-    // });
-    // console.log(process.cwd(), 'cwd');
-    const filePath = path.join('D:\\LearnNestjs\\BookStore\\project-name\\uploads', photoName);
-    if (!fs.existsSync(filePath)) {
-      throw new Error('File không tồn tại');
-    }
+  // @Get('photo/:photoName')
+  // getBookPhoto(@Param('photoName') photoName: string, @Res() res) {
+  //   // return this.bookService.getBookPhoto(photoName).then((fileBuffer) => {
+  //   //   res.setHeader('Content-Type', 'image/jpeg'); // Hoặc loại MIME phù hợp với ảnh của bạn
+  //   //   res.send(fileBuffer);
+  //   // });
+  //   // console.log(process.cwd(), 'cwd');
+  //   const filePath = path.join('D:\\LearnNestjs\\BookStore\\project-name\\uploads', photoName);
+  //   if (!fs.existsSync(filePath)) {
+  //     throw new Error('File không tồn tại');
+  //   }
 
-    return res.sendFile(filePath);
-  }
+  //   return res.sendFile(filePath);
+  // }
 }
