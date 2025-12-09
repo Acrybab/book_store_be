@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
@@ -16,8 +16,9 @@ export class SupabaseService {
       contentType,
       upsert: true,
     });
-    if (error) throw error;
-
+    if (error) {
+      throw new HttpException(error.message, 400);
+    }
     const { data } = this.supabase.storage.from(bucket).getPublicUrl(fileName);
     return data.publicUrl;
   }
