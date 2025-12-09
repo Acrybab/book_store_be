@@ -56,6 +56,7 @@ export class BookService {
       ...book,
       categories: categories,
       photo: url,
+      fileType: file.mimetype,
       price: book.price,
     });
     return this.bookRepository.save(newBook);

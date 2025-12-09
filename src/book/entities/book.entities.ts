@@ -30,7 +30,8 @@ export class Book {
 
   @Column({ nullable: true })
   photo: string;
-
+  @Column({ nullable: true })
+  fileType: string;
   @Column()
   price: string;
 
