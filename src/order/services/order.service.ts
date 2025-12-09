@@ -161,7 +161,7 @@ export class OrderService {
   async retriveOrderHistory(userId: number) {
     const orders = await this.orderRepository.find({
       where: { user: { id: userId } },
-      relations: ['orderItems', 'payments'],
+      relations: ['orderItems', 'payments', 'orderItems.book'],
     });
     return orders;
   }
