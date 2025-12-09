@@ -163,6 +163,9 @@ export class OrderService {
       where: { user: { id: userId } },
       relations: ['orderItems', 'payments', 'orderItems.book'],
     });
-    return orders;
+    return {
+      data: orders,
+      message: 'Retrive order history successfully',
+    };
   }
 }
