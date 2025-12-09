@@ -183,6 +183,7 @@ export class BookService {
     const cartDetail = await this.cartRepository.find({
       where: {
         user: { id: userId },
+        orderStatus: 'PENDING',
       },
       relations: ['book', 'user', 'book.orderItems', 'book.orderItems.order', 'book.orderItems.order.payments'],
     });
