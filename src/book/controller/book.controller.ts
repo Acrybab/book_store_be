@@ -32,22 +32,8 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('photo', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          // Tạo tên file: timestamp-random.ext
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, `${uniqueSuffix}${ext}`);
-        },
-      }),
-    }),
-  )
-  createBook(@Body(ValidationPipe) createBookDto: CreateBookDto, @UploadedFile() file: Express.Multer.File) {
-    console.log(file, 'file');
-
+  @UseInterceptors(FileInterceptor('photo'))
+  async createBook(@Body(ValidationPipe) createBookDto: CreateBookDto, @UploadedFile() file: Express.Multer.File) {
     return this.bookService.createBook(createBookDto, file);
   }
 

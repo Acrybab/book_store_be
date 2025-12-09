@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Book } from '../entities/book.entities';
@@ -10,7 +12,7 @@ import { Cart } from '../entities/cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
 import { join } from 'path';
 import { promises as fs } from 'fs';
-import { OrderService } from 'src/order/services/order.service';
+import { SupabaseService } from './supabase.service';
 
 @Injectable()
 export class BookService {
@@ -27,7 +29,7 @@ export class BookService {
     private readonly categoryRepository: Repository<Category>,
 
     private readonly userService: UserService,
-    private readonly orderService: OrderService,
+    private readonly supabaseService: SupabaseService,
   ) {}
 
   async getCart() {
@@ -44,11 +46,16 @@ export class BookService {
     const categoriesId = book.categoriesId.split(',').map((id) => parseInt(id.trim(), 10));
 
     const categories = await this.categoryRepository.findByIds(categoriesId);
-
+    const url = await this.supabaseService.uploadFile(
+      'book_store',
+      `${Date.now()}_${file.originalname}`,
+      file.buffer,
+      file.mimetype,
+    );
     const newBook = this.bookRepository.create({
       ...book,
       categories: categories,
-      photo: file.filename.trim(),
+      photo: url,
       price: book.price,
     });
     return this.bookRepository.save(newBook);
