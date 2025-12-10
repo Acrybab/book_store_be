@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Book } from '../entities/book.entities';
@@ -10,8 +8,6 @@ import { FavoriteBook } from '../entities/favoriteBook.entities';
 import { UserService } from 'src/core/users/user.service';
 import { Cart } from '../entities/cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
-import { join } from 'path';
-import { promises as fs } from 'fs';
 import { SupabaseService } from './supabase.service';
 
 @Injectable()
@@ -103,12 +99,14 @@ export class BookService {
     });
 
     if (file) {
-      const filePath = join(__dirname, '..', '..', 'uploads', file.originalname);
-      await fs.writeFile(filePath, file.buffer); // Lưu lại file mới
-      updatedBook.photo = file.originalname;
+      const url = await this.supabaseService.uploadFile(
+        'book_store',
+        `${Date.now()}_${file.originalname}`,
+        file.buffer,
+        file.mimetype,
+      );
+      updatedBook.photo = url;
     }
-
-    console.log(updatedBook, 'updatedBook');
 
     return await this.bookRepository.save(updatedBook);
   }

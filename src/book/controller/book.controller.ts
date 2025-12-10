@@ -18,8 +18,7 @@ import {
 import { BookService } from '../service/book.service';
 import { AddToCartDto, CreateBookDto } from '../dto/book.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+
 // import { Response } from 'express';
 // import path from 'path/posix';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
@@ -68,18 +67,7 @@ export class BookController {
   }
 
   @Patch(':id')
-  @UseInterceptors(
-    FileInterceptor('photo', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, `${file.originalname}-${uniqueSuffix}${ext}`);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('photo'))
   updateBook(
     @Param('id') id: number,
     @Body(ValidationPipe) updateBookDto: Partial<CreateBookDto>,

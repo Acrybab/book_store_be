@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookDto {
   @IsNotEmpty()
@@ -36,10 +36,6 @@ export class AddToCartDto {
   @IsNotEmpty()
   @IsNumber()
   bookId: number;
-
-  // @IsArray()
-  // @IsNumber({}, { each: true })
-  // categoriesId: number[];
 
   @IsOptional()
   @IsNumber()

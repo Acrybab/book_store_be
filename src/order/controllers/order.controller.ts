@@ -12,11 +12,6 @@ export class OrderController {
     return await this.orderService.createOrder(dto, idToken);
   }
 
-  // @Post('verify-phone')
-  // async verifyPhone(@Body('idToken') idToken: string) {
-  //   return this.orderService.verifyPhone(idToken);
-  // }
-
   @Patch(':id/completed')
   async updateStatus(@Param('id') id: number, @Body('status') status: string) {
     return this.orderService.completeOrder(id, status);
