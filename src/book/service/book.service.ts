@@ -58,14 +58,23 @@ export class BookService {
     return this.bookRepository.save(newBook);
   }
 
-  async getAllBooks(page: number = 1, limit: number = 10) {
+  async getAllBooks(page: number = 1, limit: number = 10, search?: string) {
     const skip = (page - 1) * limit;
-    const [books, total] = await this.bookRepository.findAndCount({
-      relations: ['categories', 'ratings'],
-      skip,
-      take: limit,
-      order: { createdAt: 'ASC' },
-    });
+    const searchedBooksQuery = this.bookRepository.createQueryBuilder('book');
+
+    if (search) {
+      searchedBooksQuery.where('book.title ILIKE :search OR book.author ILIKE :search', { search: `%${search}%` });
+    }
+
+    searchedBooksQuery
+      .skip(skip)
+      .take(limit)
+      .orderBy('book.createdAt', 'ASC')
+      .leftJoinAndSelect('book.categories', 'categories')
+      .leftJoinAndSelect('book.ratings', 'ratings');
+
+    const [books, total] = await searchedBooksQuery.getManyAndCount();
+
     return {
       data: books,
       total,
@@ -73,6 +82,19 @@ export class BookService {
       totalPages: Math.ceil(total / limit),
       message: 'All books retrieved successfully',
     };
+    // const [books, total] = await this.bookRepository.findAndCount({
+    //   relations: ['categories', 'ratings'],
+    //   skip,
+    //   take: limit,
+    //   order: { createdAt: 'ASC' },
+    // });
+    // return {
+    //   data: books,
+    //   total,
+    //   currentPage: page,
+    //   totalPages: Math.ceil(total / limit),
+    //   message: 'All books retrieved successfully',
+    // };
   }
 
   findBookById(id: number) {

@@ -34,8 +34,8 @@ export class BookController {
   }
 
   @Get()
-  getAllBooks(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.bookService.getAllBooks(Number(page), Number(limit));
+  getAllBooks(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('search') search?: string) {
+    return this.bookService.getAllBooks(Number(page), Number(limit), search);
   }
   @Get('best-seller')
   getBestSellerBooks() {
