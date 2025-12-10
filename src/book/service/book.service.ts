@@ -96,6 +96,7 @@ export class BookService {
     const updatedBook = this.bookRepository.merge(existingBook, {
       ...book,
       price: book.price,
+      fileType: file ? file.mimetype : existingBook.fileType,
     });
 
     if (file) {
