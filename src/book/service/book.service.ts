@@ -9,7 +9,7 @@ import { UserService } from 'src/core/users/user.service';
 import { Cart } from '../entities/cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
 import { SupabaseService } from './supabase.service';
-import { Brackets } from 'typeorm/browser/query-builder/Brackets.js';
+import { Brackets } from 'typeorm/query-builder/Brackets';
 
 @Injectable()
 export class BookService {
@@ -65,7 +65,8 @@ export class BookService {
     const query = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.categories', 'categories')
-      .leftJoinAndSelect('book.ratings', 'ratings')
+      // .leftJoinAndSelect('book.ratings', 'ratings')
+      .leftJoinAndSelect('book.reviews', 'reviews')
       .skip(skip)
       .take(limit)
       .orderBy('book.createdAt', 'ASC');

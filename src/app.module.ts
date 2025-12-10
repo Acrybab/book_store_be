@@ -31,6 +31,8 @@ import { ShippingAddressModule } from './shippingAddress/shipping.moudle';
 import { ConfigModule } from '@nestjs/config';
 import { PayosModule } from './payOS/payos.module';
 import { CommonModule } from './common/commo.module';
+import { Review } from './review/entities/review.entities';
+import { ReviewModule } from './review/review.module';
 // import { PaymentController } from './vnpay/controller/payment.controller';
 
 @Module({
@@ -46,7 +48,7 @@ import { CommonModule } from './common/commo.module';
 
       autoLoadEntities: true,
 
-      entities: [User, Book, FavoriteBook, Cart, Category, Order, OrderItem, Payment, Rating, ShippingAddress],
+      entities: [User, Book, FavoriteBook, Cart, Category, Order, OrderItem, Payment, Rating, ShippingAddress, Review],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -61,6 +63,7 @@ import { CommonModule } from './common/commo.module';
     ShippingAddressModule,
     PayosModule,
     CommonModule,
+    ReviewModule,
     // AuthModule,
   ],
 

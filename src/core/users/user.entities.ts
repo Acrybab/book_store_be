@@ -2,6 +2,7 @@ import { Cart } from 'src/book/entities/cart.entities';
 import { FavoriteBook } from 'src/book/entities/favoriteBook.entities';
 import { Order } from 'src/order/entities/order.entities';
 import { Rating } from 'src/rating/entities/rating.entities';
+import { Review } from 'src/review/entities/review.entities';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -36,4 +37,6 @@ export class User {
   orders: Order[];
   @OneToMany(() => ShippingAddress, (address) => address.user)
   shippingAddresses: ShippingAddress[];
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }

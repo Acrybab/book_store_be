@@ -13,6 +13,7 @@ import { Cart } from './cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
 import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
 import { Rating } from 'src/rating/entities/rating.entities';
+import { Review } from 'src/review/entities/review.entities';
 
 @Entity('books')
 export class Book {
@@ -54,6 +55,8 @@ export class Book {
   orderItems: OrderItem[];
   @OneToMany(() => Rating, (rating) => rating.book)
   ratings: Rating[];
+  @OneToMany(() => Review, (review) => review.book)
+  reviews: Review[];
 
   @CreateDateColumn()
   createdAt: Date;

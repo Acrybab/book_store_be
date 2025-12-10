@@ -22,6 +22,6 @@ import { MailService } from 'src/common/services/mail.service';
   ],
   controllers: [UserController],
   providers: [UserService, JwtService, GoogleStrategy, JwtStrategy, MailService],
-  exports: [UserService],
+  exports: [UserService, MailService],
 })
 export class UserModule {}
