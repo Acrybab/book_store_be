@@ -96,6 +96,10 @@ export class BookService {
     const updatedBook = this.bookRepository.merge(existingBook, {
       ...book,
       price: book.price,
+      categories: book.categoriesId
+        ? await this.categoryRepository.findByIds(book.categoriesId.split(',').map((id) => parseInt(id.trim(), 10)))
+        : existingBook.categories,
+      photo: file ? existingBook.photo : existingBook.photo,
       fileType: file ? file.mimetype : existingBook.fileType,
     });
 
@@ -122,8 +126,7 @@ export class BookService {
   async addToFavoriteBook(userId: number, bookId: number) {
     const user = await this.userService.findById(userId);
     const book = await this.findBookById(bookId);
-    console.log(book, 'book');
-    console.log(user, 'user');
+
     const favoriteBook = this.favoriteBookRepository.create({
       title: book?.title,
       price: book?.price,
