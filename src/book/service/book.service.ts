@@ -9,6 +9,7 @@ import { UserService } from 'src/core/users/user.service';
 import { Cart } from '../entities/cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
 import { SupabaseService } from './supabase.service';
+import { Brackets } from 'typeorm/browser/query-builder/Brackets.js';
 
 @Injectable()
 export class BookService {
@@ -60,20 +61,25 @@ export class BookService {
 
   async getAllBooks(page: number = 1, limit: number = 10, search?: string) {
     const skip = (page - 1) * limit;
-    const searchedBooksQuery = this.bookRepository.createQueryBuilder('book');
 
-    if (search) {
-      searchedBooksQuery.where('book.title ILIKE :search OR book.author ILIKE :search', { search: `%${search}%` });
-    }
-
-    searchedBooksQuery
+    const query = this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.categories', 'categories')
+      .leftJoinAndSelect('book.ratings', 'ratings')
       .skip(skip)
       .take(limit)
-      .orderBy('book.createdAt', 'ASC')
-      .leftJoinAndSelect('book.categories', 'categories')
-      .leftJoinAndSelect('book.ratings', 'ratings');
+      .orderBy('book.createdAt', 'ASC');
 
-    const [books, total] = await searchedBooksQuery.getManyAndCount();
+    if (search) {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('book.title LIKE :search').orWhere('book.author LIKE :search');
+        }),
+        { search: `%${search}%` },
+      );
+    }
+
+    const [books, total] = await query.getManyAndCount();
 
     return {
       data: books,
@@ -82,19 +88,6 @@ export class BookService {
       totalPages: Math.ceil(total / limit),
       message: 'All books retrieved successfully',
     };
-    // const [books, total] = await this.bookRepository.findAndCount({
-    //   relations: ['categories', 'ratings'],
-    //   skip,
-    //   take: limit,
-    //   order: { createdAt: 'ASC' },
-    // });
-    // return {
-    //   data: books,
-    //   total,
-    //   currentPage: page,
-    //   totalPages: Math.ceil(total / limit),
-    //   message: 'All books retrieved successfully',
-    // };
   }
 
   findBookById(id: number) {
