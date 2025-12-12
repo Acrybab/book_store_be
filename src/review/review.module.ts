@@ -15,6 +15,8 @@ import { Category } from 'src/categories/entities/categories.entities';
 import { SupabaseService } from 'src/book/service/supabase.service';
 import { MailService } from 'src/common/services/mail.service';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
+import { ReactReviewService } from './services/react_review.service';
+import { ReactReviewController } from './controller/react_review.controller';
 
 @Module({
   imports: [
@@ -30,8 +32,8 @@ import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.en
       ShippingAddress,
     ]),
   ],
-  providers: [ReviewService, BookService, UserService, SupabaseService, MailService],
-  controllers: [ReviewController],
+  providers: [ReviewService, BookService, UserService, SupabaseService, MailService, ReactReviewService],
+  controllers: [ReviewController, ReactReviewController],
   exports: [],
 })
 export class ReviewModule {}

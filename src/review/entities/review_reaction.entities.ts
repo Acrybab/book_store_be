@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Review } from './review.entities';
+import { User } from 'src/core/users/user.entities';
 
 @Entity('review_reactions')
 export class ReviewReaction {
@@ -7,6 +8,8 @@ export class ReviewReaction {
   reactionId: number;
   @Column({ type: 'enum', enum: ['like', 'dislike'] })
   type: string;
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  user: User;
   @ManyToOne(() => Review, (review) => review.reactions, {
     onDelete: 'CASCADE',
   })

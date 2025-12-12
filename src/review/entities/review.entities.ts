@@ -1,6 +1,14 @@
 import { Book } from 'src/book/entities/book.entities';
 import { User } from 'src/core/users/user.entities';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ReviewImage } from './review_images';
 import { ReviewReaction } from './review_reaction.entities';
 
@@ -12,9 +20,13 @@ export class Review {
   comment: string;
   @Column('int')
   rating: number;
-  @OneToMany(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
+  @Column({ default: 0 })
+  totalLikes: number;
+  @Column({ default: 0 })
+  totalDislikes: number;
+  @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
   user: User;
-  @OneToMany(() => Book, (book) => book.reviews, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Book, (book) => book.reviews, { onDelete: 'CASCADE' })
   book: Book;
   @OneToMany(() => ReviewImage, (image) => image.review, {
     cascade: true,
