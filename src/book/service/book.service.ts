@@ -142,12 +142,13 @@ export class BookService {
   async addToFavoriteBook(userId: number, bookId: number) {
     const user = await this.userService.findById(userId);
     const book = await this.findBookById(bookId);
-
+    console.log(book);
     const favoriteBook = this.favoriteBookRepository.create({
       title: book?.title,
       price: book?.price,
       userId: user?.id,
       bookId: book?.id,
+      photo: book?.photo,
       user: user as User,
       book: book as Book,
     });

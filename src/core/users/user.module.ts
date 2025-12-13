@@ -9,6 +9,7 @@ import { GoogleStrategy } from '../auth/google.strategy';
 import { JwtStrategy } from '../auth/jwt.strategy';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { MailService } from 'src/common/services/mail.service';
+import { SupabaseService } from 'src/book/service/supabase.service';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { MailService } from 'src/common/services/mail.service';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtService, GoogleStrategy, JwtStrategy, MailService],
+  providers: [UserService, JwtService, GoogleStrategy, JwtStrategy, MailService, SupabaseService],
   exports: [UserService, MailService],
 })
 export class UserModule {}

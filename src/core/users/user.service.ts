@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { MailService } from 'src/common/services/mail.service';
 import { htmlContent } from 'src/common/services/htmlcontent';
+import { SupabaseService } from 'src/book/service/supabase.service';
 
 type SignUpParams = {
   name: string;
@@ -24,7 +25,7 @@ export class UserService {
   constructor(
     private jwtService: JwtService,
     private readonly mailService: MailService,
-
+    private readonly supabaseService: SupabaseService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(ShippingAddress)
@@ -67,8 +68,8 @@ export class UserService {
       avatar: userEntity.avatar,
       shippingAddressId: userEntity.shippingAddressId,
     });
-    await this.userRepository.save(user);
 
+    await this.userRepository.save(user);
     const payload = { sub: user.id, email: email || '' };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '1d',
@@ -100,6 +101,45 @@ export class UserService {
     });
 
     await this.userRepository.save(newUser);
+  }
+
+  async updateMyProfile(userId: number, userUpdateDto: Partial<User>) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = this.userRepository.merge(user, {
+      ...userUpdateDto,
+    });
+
+    await this.userRepository.save(updatedUser);
+
+    return {
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
+  }
+
+  async updateAvatar(userId: number, file: Express.Multer.File) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return {
+        message: 'User not found',
+      };
+    }
+
+    const url = await this.supabaseService.uploadFile(
+      'book_store',
+      `${Date.now()}_${file.originalname}`,
+      file.buffer,
+      file.mimetype,
+    );
+    user.avatar = url;
+
+    await this.userRepository.save(user);
   }
 
   async handleSignUpWithGoogle(signUpParams: SignUpParams) {
@@ -183,13 +223,16 @@ export class UserService {
   async getMe(userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['cartItems', 'ratings'],
+      relations: ['cartItems', 'ratings', 'shippingAddresses', 'favorites'],
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    return {
+      message: ' User profile fetched successfully',
+      data: user,
+    };
   }
 }
