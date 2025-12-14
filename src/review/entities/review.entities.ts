@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -29,7 +28,6 @@ export class Review {
   @ManyToOne(() => User, (user) => user.reviews, { onDelete: 'CASCADE' })
   user: User;
   @ManyToOne(() => Book, (book) => book.reviews, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'id' })
   book: Book;
   @Column()
   bookId: number;
