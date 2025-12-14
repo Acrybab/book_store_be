@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:3000', // cho phép FE Next.js gọi
+    origin: 'https://bookshop-trong-khang.vercel.app', // cho phép FE Next.js gọi
     credentials: true, // nếu bạn xài cookie/session
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

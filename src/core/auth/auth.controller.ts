@@ -22,12 +22,12 @@ export class AuthController {
   ) {} // private readonly userService: UserService, // private readonly jwtService: JwtService,
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  @Header('Access-Control-Allow-Origin', 'http://localhost:3000')
+  @Header('Access-Control-Allow-Origin', 'https://bookshop-trong-khang.vercel.app')
   @Header('Access-Control-Allow-Credentials', 'true')
   @Header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
   googleAuth() {
     const clientId = process.env.GOOGLE_CLIENT_ID;
-    const redirectUri = encodeURIComponent('http://localhost:3001/auth/google/callback');
+    const redirectUri = encodeURIComponent('https://bookstore-production-e49f.up.railway.app/auth/google/callback');
     const scope = encodeURIComponent('email profile');
     const url = encodeURIComponent(
       `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`,
