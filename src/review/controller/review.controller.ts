@@ -26,7 +26,7 @@ export class ReviewController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':bookId')
-  async getReviewByBookId(@Body('bookId') bookId: number) {
+  async getReviewByBookId(@Param('bookId') bookId: number) {
     return this.reviewService.getReviewByBookId(bookId);
   }
 

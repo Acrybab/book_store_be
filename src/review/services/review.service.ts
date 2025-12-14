@@ -18,16 +18,13 @@ export class ReviewService {
   ) {}
 
   async getReviewByBookId(bookId: number) {
-    const review = await this.reviewRepository.find({ where: { book: { id: bookId } }, relations: ['user', 'book'] });
-    if (review.length === 0) {
-      return {
-        message: 'No reviews found for this book',
-        data: [],
-      };
-    }
+    const reviews = await this.reviewRepository.find({
+      where: { bookId: bookId },
+      relations: ['book'],
+    });
     return {
-      message: 'Reviews retrieved successfully',
-      data: review,
+      message: reviews.length === 0 ? 'No reviews found for this book' : 'Reviews retrieved successfully',
+      data: reviews,
     };
   }
 
