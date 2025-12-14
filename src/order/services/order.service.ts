@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '../entities/order.entities';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
 import { Payment } from 'src/payment/entities/payment.entities';
 import { Book } from 'src/book/entities/book.entities';
@@ -160,7 +160,8 @@ export class OrderService {
 
   async retriveOrderHistory(userId: number) {
     const orders = await this.orderRepository.find({
-      where: { user: { id: userId } },
+      where: { user: { id: userId }, status: In(['SUCCESS']) },
+
       relations: ['orderItems', 'payments', 'orderItems.book'],
     });
     return {
