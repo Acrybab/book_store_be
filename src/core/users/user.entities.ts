@@ -2,6 +2,7 @@ import { Cart } from 'src/book/entities/cart.entities';
 import { FavoriteBook } from 'src/book/entities/favoriteBook.entities';
 import { Order } from 'src/order/entities/order.entities';
 import { Rating } from 'src/rating/entities/rating.entities';
+import { Reply } from 'src/reply/entities/reply.entities';
 import { Review } from 'src/review/entities/review.entities';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -39,4 +40,6 @@ export class User {
   shippingAddresses: ShippingAddress[];
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+  @OneToMany(() => Reply, (reply) => reply.user)
+  replies: Reply[];
 }

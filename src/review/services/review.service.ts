@@ -20,7 +20,7 @@ export class ReviewService {
   async getReviewByBookId(bookId: number) {
     const reviews = await this.reviewRepository.find({
       where: { bookId: bookId },
-      relations: ['book', 'user'],
+      relations: ['book', 'user', 'replies'],
     });
     return {
       message: reviews.length === 0 ? 'No reviews found for this book' : 'Reviews retrieved successfully',

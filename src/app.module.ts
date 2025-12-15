@@ -33,6 +33,8 @@ import { PayosModule } from './payOS/payos.module';
 import { CommonModule } from './common/commo.module';
 import { Review } from './review/entities/review.entities';
 import { ReviewModule } from './review/review.module';
+import { ReplyModule } from './reply/reply.module';
+import { Reply } from './reply/entities/reply.entities';
 // import { PaymentController } from './vnpay/controller/payment.controller';
 
 @Module({
@@ -48,7 +50,20 @@ import { ReviewModule } from './review/review.module';
 
       autoLoadEntities: true,
 
-      entities: [User, Book, FavoriteBook, Cart, Category, Order, OrderItem, Payment, Rating, ShippingAddress, Review],
+      entities: [
+        User,
+        Book,
+        FavoriteBook,
+        Cart,
+        Category,
+        Order,
+        OrderItem,
+        Payment,
+        Rating,
+        ShippingAddress,
+        Review,
+        Reply,
+      ],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -64,6 +79,7 @@ import { ReviewModule } from './review/review.module';
     PayosModule,
     CommonModule,
     ReviewModule,
+    ReplyModule,
     // AuthModule,
   ],
 
