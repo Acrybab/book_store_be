@@ -92,7 +92,7 @@ export class BookService {
   }
 
   findBookById(id: number) {
-    return this.bookRepository.findOne({ where: { id }, relations: ['categories'] });
+    return this.bookRepository.findOne({ where: { id }, relations: ['categories', 'reviews'] });
   }
 
   async getBookDetails(id: number) {
