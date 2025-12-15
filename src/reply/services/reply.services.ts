@@ -15,6 +15,7 @@ export class ReplyService {
       comment,
       review: { reviewId }, // 👈 gán OBJECT
       user: { id: userId }, // 👈 gán OBJECT
+      replyAt: new Date(),
     });
 
     return await this.replyRepository.save(reply);
@@ -27,5 +28,9 @@ export class ReplyService {
       },
       relations: ['user', 'review'],
     });
+  }
+
+  async deleteReply(replyId: number) {
+    return this.replyRepository.delete({ replyId });
   }
 }

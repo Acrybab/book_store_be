@@ -1,6 +1,6 @@
 import { User } from 'src/core/users/user.entities';
 import { Review } from 'src/review/entities/review.entities';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('replies')
 export class Reply {
@@ -21,4 +21,6 @@ export class Reply {
   })
   @JoinColumn({ name: 'userId' })
   user: User;
+  @CreateDateColumn()
+  replyAt: Date;
 }

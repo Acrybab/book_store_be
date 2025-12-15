@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ReplyService } from '../services/reply.services';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { CreateReplyDto } from '../dto/replies.dto';
@@ -18,6 +18,7 @@ export class ReplyController {
       data: newReply,
     };
   }
+
   @UseGuards(JwtAuthGuard)
   @Get(':reviewId')
   async getRepliesByReviewId(@Body('reviewId') reviewId: number) {
@@ -25,6 +26,14 @@ export class ReplyController {
     return {
       message: replies.length === 0 ? 'No replies found for this review' : 'Replies retrieved successfully',
       data: replies,
+    };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':replyId')
+  async deleteReply(@Param('replyId') replyId: number) {
+    await this.replyService.deleteReply(replyId);
+    return {
+      message: 'Reply deleted successfully',
     };
   }
 }
