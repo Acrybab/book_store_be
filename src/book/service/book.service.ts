@@ -187,16 +187,30 @@ export class BookService {
     return this.cartRepository.save(cartItem);
   }
 
-  async getBestSellerBooks() {
-    const books = await this.bookRepository.find({
-      where: { badge: 'Best Seller' },
-      relations: ['categories', 'ratings', 'reviews'],
-    });
+  async getBestSellerBooks(limit: number = 10) {
+    const bestSellers = await this.bookRepository
+      .createQueryBuilder('book')
+      .leftJoin('book.orderItems', 'orderItem')
+      .leftJoin('orderItem.order', 'order')
+      .leftJoin('order.payments', 'payment')
+      .select('book.id', 'id')
+      .addSelect('book.title', 'title')
+      .addSelect('book.author', 'author')
+      .addSelect('book.photo', 'photo')
+      .addSelect('book.price', 'price')
+      .addSelect('SUM(orderItem.quantity)', 'sold')
+      .where('payment.status = :status', { status: 'PAID' }) // hoặc SUCCESS
+      .groupBy('book.id')
+      .orderBy('sold', 'DESC')
+      .limit(limit)
+      .getRawMany();
+
     return {
-      data: books,
       message: 'Best seller books retrieved successfully',
+      data: bestSellers,
     };
   }
+
   async getTotalCart(userId: number) {
     const cartItems = await this.cartRepository.find({ where: { userId }, relations: ['book'] });
 
@@ -220,9 +234,4 @@ export class BookService {
       data: cartDetail,
     };
   }
-
-  // async getBookPhoto(photoName: string) {
-  //   const filePath = join(process.cwd(), 'uploads', photoName);
-  //   return fs.readFile(filePath);
-  // }
 }
