@@ -33,4 +33,9 @@ export class ReplyService {
   async deleteReply(replyId: number) {
     return this.replyRepository.delete({ replyId });
   }
+
+  async modifyReply(replyId: number, comment: string) {
+    await this.replyRepository.update({ replyId }, { comment });
+    return this.replyRepository.findOne({ where: { replyId } });
+  }
 }

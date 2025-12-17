@@ -190,7 +190,7 @@ export class BookService {
   async getBestSellerBooks() {
     const books = await this.bookRepository.find({
       where: { badge: 'Best Seller' },
-      relations: ['categories', 'ratings'],
+      relations: ['categories', 'ratings', 'reviews'],
     });
     return {
       data: books,

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ReplyService } from '../services/reply.services';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
 import { CreateReplyDto } from '../dto/replies.dto';
@@ -34,6 +34,16 @@ export class ReplyController {
     await this.replyService.deleteReply(replyId);
     return {
       message: 'Reply deleted successfully',
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('modify/:replyId')
+  async modifyReply(@Param('replyId') replyId: number, @Body('comment') comment: string) {
+    const updatedReply = await this.replyService.modifyReply(replyId, comment);
+    return {
+      message: 'Reply updated successfully',
+      data: updatedReply,
     };
   }
 }
