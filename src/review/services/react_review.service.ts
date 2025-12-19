@@ -41,6 +41,10 @@ export class ReactReviewService {
     }
     if (existingReaction.type === reactReview.type) {
       existingReaction.type = 'null';
+    } else if (existingReaction.type === 'like') {
+      existingReaction.type = 'dislike';
+    } else if (existingReaction.type === 'dislike') {
+      existingReaction.type = 'like';
     } else {
       existingReaction.type = reactReview.type;
     }
