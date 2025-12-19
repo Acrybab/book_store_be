@@ -5,7 +5,6 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { ReviewReaction } from './review_reaction.entities';
@@ -13,7 +12,6 @@ import { ReviewImage } from './review_images';
 import { User } from 'src/core/users/user.entities';
 import { Book } from 'src/book/entities/book.entities';
 import { Reply } from 'src/reply/entities/reply.entities';
-@Unique(['user', 'review'])
 @Entity('reviews')
 export class Review {
   @PrimaryGeneratedColumn()

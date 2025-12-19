@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Review } from './review.entities';
 import { User } from 'src/core/users/user.entities';
-
+@Unique(['user', 'review'])
 @Entity('review_reactions')
 export class ReviewReaction {
   @PrimaryGeneratedColumn()
