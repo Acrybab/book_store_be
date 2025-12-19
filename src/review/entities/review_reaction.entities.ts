@@ -1,6 +1,8 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Review } from './review.entities';
 import { User } from 'src/core/users/user.entities';
+
+// fix error
 @Unique(['user', 'review'])
 @Entity('review_reactions')
 export class ReviewReaction {
