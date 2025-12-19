@@ -20,45 +20,33 @@ export class ReactReviewService {
       where: {
         user: { id: userId },
         review: { reviewId: reactReview.reviewId },
-        type: reactReview.type,
       },
     });
 
     if (!existingReaction) {
+      // Chưa react lần nào
       const reaction = this.reviewReactionRepository.create({
-        type: reactReview.type,
+        type: reactReview.type, // like | dislike
         review: { reviewId: reactReview.reviewId },
         user: { id: userId },
       });
 
       await this.reviewReactionRepository.save(reaction);
-
-      await this.updateReviewReactionStats(reactReview.reviewId);
-
-      return {
-        message: 'Reaction added successfully',
-      };
-    }
-    if (existingReaction.type === reactReview.type) {
-      existingReaction.type = 'null';
-    } else if (existingReaction.type === 'like') {
-      existingReaction.type = 'dislike';
-    } else if (existingReaction.type === 'dislike') {
-      existingReaction.type = 'like';
     } else {
-      existingReaction.type = reactReview.type;
+      if (existingReaction.type === reactReview.type) {
+        // bấm lại cùng nút → bỏ react
+        existingReaction.type = 'null';
+      } else {
+        // chuyển like ↔ dislike
+        existingReaction.type = reactReview.type;
+      }
+
+      await this.reviewReactionRepository.save(existingReaction);
     }
 
-    // Nếu có rồi → cập nhật type
-    await this.reviewReactionRepository.save(existingReaction);
-
-    // cập nhật lại review
     await this.updateReviewReactionStats(reactReview.reviewId);
 
-    return {
-      message: 'Reaction updated successfully',
-      reactReview: existingReaction,
-    };
+    return { message: 'Reaction updated successfully' };
   }
 
   async updateReviewReactionStats(reviewId: number) {
