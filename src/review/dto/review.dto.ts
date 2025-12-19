@@ -20,5 +20,5 @@ export class ReactReviewDTO {
   reviewId: number;
   @IsString()
   @IsNotEmpty()
-  type: 'like' | 'dislike';
+  type: 'like' | 'dislike' | 'null';
 }

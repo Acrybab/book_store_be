@@ -6,7 +6,7 @@ import { User } from 'src/core/users/user.entities';
 export class ReviewReaction {
   @PrimaryGeneratedColumn()
   reactionId: number;
-  @Column({ type: 'enum', enum: ['like', 'dislike'] })
+  @Column({ type: 'enum', enum: ['like', 'dislike', 'null'] })
   type: string;
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookService } from 'src/book/service/book.service';
@@ -6,6 +7,7 @@ import { Review } from '../entities/review.entities';
 import { Repository } from 'typeorm';
 import { MakeReviewDTO } from '../dto/review.dto';
 import { ReactReviewService } from './react_review.service';
+import OpenAI from 'openai';
 
 @Injectable()
 export class ReviewService {
@@ -16,6 +18,10 @@ export class ReviewService {
     @InjectRepository(Review)
     private readonly reviewRepository: Repository<Review>,
   ) {}
+
+  openAi = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
   async getReviewByBookId(bookId: number) {
     const reviews = await this.reviewRepository.find({
@@ -28,14 +34,47 @@ export class ReviewService {
     };
   }
 
+  async checkComentToxic(content: string) {
+    try {
+      const response = await this.openAi.moderations.create({
+        model: 'omni-moderation-latest',
+        input: content,
+      });
+
+      const result = response.results[0];
+
+      return {
+        flagged: result.flagged,
+        categories: result.categories,
+      };
+    } catch (error: any) {
+      // Rate limit hoặc lỗi OpenAI
+      console.error('OpenAI moderation error:', error?.status);
+
+      return {
+        flagged: false,
+        categories: {},
+        error: 'OPENAI_RATE_LIMIT',
+      };
+    }
+  }
+
   async makeReview(userId: number, makeReviewDTO: MakeReviewDTO) {
     const user = await this.userService.findById(userId);
 
     const book = await this.bookService.findBookById(makeReviewDTO.bookId);
 
+    const moderation = await this.checkComentToxic(makeReviewDTO.comment);
+
     if (!user || !book) {
       return {
         message: 'User or Book not found',
+      };
+    }
+    if (moderation.flagged) {
+      return {
+        message: 'Review comment is considered toxic and cannot be submitted',
+        categories: moderation.categories,
       };
     }
     const review = this.reviewRepository.create({

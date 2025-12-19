@@ -20,10 +20,10 @@ export class ReactReviewService {
       where: {
         user: { id: userId },
         review: { reviewId: reactReview.reviewId },
+        type: reactReview.type,
       },
     });
 
-    // Nếu chưa có reaction → tạo mới
     if (!existingReaction) {
       const reaction = this.reviewReactionRepository.create({
         type: reactReview.type,
@@ -33,16 +33,19 @@ export class ReactReviewService {
 
       await this.reviewReactionRepository.save(reaction);
 
-      // cập nhật lại review
       await this.updateReviewReactionStats(reactReview.reviewId);
 
       return {
         message: 'Reaction added successfully',
       };
     }
+    if (existingReaction.type === reactReview.type) {
+      existingReaction.type = 'null';
+    } else {
+      existingReaction.type = reactReview.type;
+    }
 
     // Nếu có rồi → cập nhật type
-    existingReaction.type = reactReview.type;
     await this.reviewReactionRepository.save(existingReaction);
 
     // cập nhật lại review
@@ -50,6 +53,7 @@ export class ReactReviewService {
 
     return {
       message: 'Reaction updated successfully',
+      reactReview: existingReaction,
     };
   }
 
