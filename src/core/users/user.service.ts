@@ -11,6 +11,8 @@ import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.en
 import { MailService } from 'src/common/services/mail.service';
 import { htmlContent } from 'src/common/services/htmlcontent';
 import { SupabaseService } from 'src/book/service/supabase.service';
+// import { Resend } from 'resend';
+import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
 type SignUpParams = {
   name: string;
@@ -52,7 +54,9 @@ export class UserService {
 
     const userExists = await this.findUserByEmail(email || '');
     if (userExists) {
-      return 'User already exists';
+      return {
+        message: 'User already exists',
+      };
     }
     const saltRounds = 10; // higher = more secure but slower
     const hashedPassword = await bcrypt.hash(password || '', saltRounds);
@@ -60,26 +64,44 @@ export class UserService {
       where: { id: userEntity.shippingAddressId },
     });
     const user = this.userRepository.create({
-      email,
+      email: email,
       password: hashedPassword,
-      name,
+      name: name,
       shippingAddresses: shippingAddress ? [shippingAddress] : [],
       phoneNumber: userEntity.phoneNumber,
       avatar: userEntity.avatar,
       shippingAddressId: userEntity.shippingAddressId,
     });
 
-    await this.userRepository.save(user);
     const payload = { sub: user.id, email: email || '' };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '1d',
       secret: process.env.MY_SECRET_KEY || 'default-secret',
     });
-    await this.mailService.sendHTMLEmail({
-      to: email as string,
-      subject: 'Welcome to Book Store!',
-      htmlContent: htmlContent(email as string),
+    const mailerSend = new MailerSend({
+      apiKey: process.env.MAILER_SEND!,
     });
+    const sentForm = new Sender('info@test-r83ql3pjmezgzw1j.mlsender.net', 'Book Store');
+    const recipient = [new Recipient(email as string)];
+    const emailParams = new EmailParams()
+      .setFrom(sentForm)
+      .setTo(recipient)
+      .setSubject('Welcome to Book Store!')
+      .setHtml(htmlContent(email as string));
+    // await mailerSend.email.send({
+    //   from: sentForm,
+    //   to: new Recipient(email as string),
+    //   subject: 'Welcome to Book Store!',
+    //   html: htmlContent(email as string),
+    // });
+    await mailerSend.email.send(emailParams);
+    await this.userRepository.save(user);
+
+    // await this.mailService.sendHTMLEmail({
+    //   to: email as string,
+    //   subject: 'Welcome to Book Store!',
+    //   htmlContent: htmlContent(email as string),
+    // });
     return {
       data: {
         message: 'Sign Up Successful',

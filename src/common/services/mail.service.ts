@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import sgMail from '@sendgrid/mail';
 import { SendHTMLEmail } from '../types';
-
 @Injectable()
 export class MailService {
   constructor() {
