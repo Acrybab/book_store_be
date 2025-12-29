@@ -85,11 +85,7 @@ export class BookController {
   }
   @Delete(':id/favorite')
   async removeFromFavorite(@Param('id') bookId: number) {
-    console.log(bookId);
-    await this.bookService.deleteFavoriteBook(bookId);
-    return {
-      message: 'Book removed from favorites',
-    };
+    return await this.bookService.deleteFavoriteBook(bookId);
   }
 
   @Post(':id/cart')

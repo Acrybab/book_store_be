@@ -140,30 +140,37 @@ export class BookService {
     return this.bookRepository.remove(book);
   }
   async addToFavoriteBook(userId: number, bookId: number) {
-    const user = await this.userService.findById(userId);
-    const book = await this.findBookById(bookId);
+    const uId = Number(userId);
+    const bId = Number(bookId);
 
-    const existingFavorite = await this.favoriteBookRepository.find({
+    // 2. Check sự tồn tại dựa trên cột ID thuần túy (nhanh và chính xác nhất)
+    const existingFavorite = await this.favoriteBookRepository.findOne({
       where: {
-        userId: userId,
-        bookId: bookId,
+        userId: uId,
+        bookId: bId,
       },
     });
 
     if (existingFavorite) {
+      // Nếu đã tồn tại, ném ra lỗi hoặc trả về thông báo tùy logic của bạn
       return {
-        message: 'Book already in favorites',
+        message: 'Book is already in favorites',
       };
     }
 
+    const user = await this.userService.findById(userId);
+    const book = await this.findBookById(bookId);
+    if (!user || !book) {
+      throw new NotFoundException('User or Book not found');
+    }
     const favoriteBook = this.favoriteBookRepository.create({
       title: book?.title,
       price: book?.price,
       userId: user?.id,
       bookId: book?.id,
       photo: book?.photo,
-      user: user as User,
-      book: book as Book,
+      user: user,
+      book: book,
     });
     const savedFavoriteBook = await this.favoriteBookRepository.save(favoriteBook);
     return {
@@ -172,8 +179,12 @@ export class BookService {
     };
   }
 
-  deleteFavoriteBook(id: number) {
-    return this.favoriteBookRepository.delete(id);
+  async deleteFavoriteBook(id: number) {
+    const deletedBook = await this.favoriteBookRepository.delete(id);
+    return {
+      message: 'Book removed from favorites',
+      data: deletedBook,
+    };
   }
 
   async addToCart(userId: number, bookId: number, quantity: number) {
