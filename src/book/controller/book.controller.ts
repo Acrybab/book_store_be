@@ -81,11 +81,7 @@ export class BookController {
 
   @Post(':id/favorite')
   async addToFavorite(@Param('id') bookId: number, @Body('userId') userId: number) {
-    const addedBookToFavorites = await this.bookService.addToFavoriteBook(userId, bookId);
-    return {
-      message: 'Book added to favorites',
-      favoriteBook: addedBookToFavorites,
-    };
+    return await this.bookService.addToFavoriteBook(userId, bookId);
   }
   @Delete(':id/favorite')
   async removeFromFavorite(@Param('id') bookId: number) {

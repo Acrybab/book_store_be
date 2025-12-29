@@ -142,7 +142,20 @@ export class BookService {
   async addToFavoriteBook(userId: number, bookId: number) {
     const user = await this.userService.findById(userId);
     const book = await this.findBookById(bookId);
-    console.log(book);
+
+    const existingFavorite = await this.favoriteBookRepository.find({
+      where: {
+        userId: userId,
+        bookId: bookId,
+      },
+    });
+
+    if (existingFavorite) {
+      return {
+        message: 'Book already in favorites',
+      };
+    }
+
     const favoriteBook = this.favoriteBookRepository.create({
       title: book?.title,
       price: book?.price,
@@ -152,7 +165,11 @@ export class BookService {
       user: user as User,
       book: book as Book,
     });
-    return this.favoriteBookRepository.save(favoriteBook);
+    const savedFavoriteBook = await this.favoriteBookRepository.save(favoriteBook);
+    return {
+      message: 'Book added to favorites',
+      favoriteBook: savedFavoriteBook,
+    };
   }
 
   deleteFavoriteBook(id: number) {
