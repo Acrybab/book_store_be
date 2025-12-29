@@ -245,7 +245,11 @@ export class UserService {
 
     return {
       message: ' User profile fetched successfully',
-      data: user,
+      data: {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
     };
   }
 }
