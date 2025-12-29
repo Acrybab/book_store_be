@@ -56,8 +56,10 @@ export class BookController {
   }
 
   @Get('cart/total')
-  getTotalCart(@Body('userId') userId: number) {
-    return this.bookService.getTotalCart(userId);
+  @UseGuards(JwtAuthGuard) // bảo vệ route
+  getTotalCart(@Req() req) {
+    const userID = req.user.userId as number; // sub trong payload JWT
+    return this.bookService.getTotalCart(userID);
   }
   @UseGuards(JwtAuthGuard) // bảo vệ route
   @Get('cart/detail')

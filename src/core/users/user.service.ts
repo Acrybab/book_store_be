@@ -88,20 +88,10 @@ export class UserService {
       .setTo(recipient)
       .setSubject('Welcome to Book Store!')
       .setHtml(htmlContent(email as string));
-    // await mailerSend.email.send({
-    //   from: sentForm,
-    //   to: new Recipient(email as string),
-    //   subject: 'Welcome to Book Store!',
-    //   html: htmlContent(email as string),
-    // });
+
     await mailerSend.email.send(emailParams);
     await this.userRepository.save(user);
 
-    // await this.mailService.sendHTMLEmail({
-    //   to: email as string,
-    //   subject: 'Welcome to Book Store!',
-    //   htmlContent: htmlContent(email as string),
-    // });
     return {
       data: {
         message: 'Sign Up Successful',
