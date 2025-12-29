@@ -106,6 +106,7 @@ export class UserService {
       data: {
         message: 'Sign Up Successful',
         user: {
+          id: user.id,
           email: user.email,
           userName: user.name,
         },
