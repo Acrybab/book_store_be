@@ -227,6 +227,7 @@ export class UserService {
           id: user.id,
           email: user.email,
           userName: user.name,
+          avatar: user.avatar,
         },
         accessToken: token,
       },
