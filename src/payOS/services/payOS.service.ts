@@ -47,7 +47,6 @@ export class PayosService {
 
       if (payment) {
         // 1. Cập nhật trạng thái payment
-        console.log(payment, 'payment');
         payment.status = 'PAID';
         const paidedStatus = await this.paymentRepository.save(payment);
         console.log(paidedStatus, 'paidedStatus');

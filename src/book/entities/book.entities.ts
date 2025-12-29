@@ -35,7 +35,10 @@ export class Book {
   fileType: string;
   @Column()
   price: string;
-
+  @Column()
+  publisher: string;
+  @Column()
+  quantity: number;
   @Column()
   badge: string;
   @OneToMany(() => FavoriteBook, (favorite) => favorite.book)

@@ -160,7 +160,7 @@ export class OrderService {
 
   async retriveOrderHistory(userId: number) {
     const orders = await this.orderRepository.find({
-      where: { user: { id: userId }, status: In(['SUCCESS']) },
+      where: { user: { id: userId }, status: In(['SUCCESS', 'UNPAID', 'FAILED']) },
 
       relations: ['orderItems', 'payments', 'orderItems.book'],
     });
