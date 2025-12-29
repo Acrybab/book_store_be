@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Book } from './book.entities';
 import { User } from 'src/core/users/user.entities';
 
@@ -16,7 +16,7 @@ export class FavoriteBook {
   photo: string;
   @Column()
   bookId: number;
-  @ManyToMany(() => Book, (book) => book.favorites)
+  @ManyToOne(() => Book, (book) => book.favorites)
   book: Book;
   @ManyToOne(() => User, (user) => user.favorites)
   user: User;
