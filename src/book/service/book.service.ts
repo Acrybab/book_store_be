@@ -180,10 +180,11 @@ export class BookService {
   }
 
   async deleteFavoriteBook(id: number) {
-    const deletedBook = await this.favoriteBookRepository.delete(id);
+    const book = await this.favoriteBookRepository.findOne({ where: { bookId: id } });
+
     return {
       message: 'Book removed from favorites',
-      data: deletedBook,
+      data: book ? await this.favoriteBookRepository.remove(book) : null,
     };
   }
 
