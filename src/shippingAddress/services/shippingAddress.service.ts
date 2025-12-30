@@ -21,10 +21,14 @@ export class ShippingAddressService {
     return await this.shippingAddressRepository.save(shippingAddress);
   }
   async getShippingAddressesByUserId(userId: number) {
-    return await this.shippingAddressRepository.find({
+    const savedAddress = await this.shippingAddressRepository.find({
       where: { userId },
       relations: ['user'],
     });
+    return {
+      message: ' Shipping addresses retrieved successfully',
+      data: savedAddress,
+    };
   }
 
   async updateShippingAddress(addressId: number, address: string, phoneNumber?: string, userId?: number) {
