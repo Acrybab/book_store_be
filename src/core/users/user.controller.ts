@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Header,
@@ -29,6 +30,7 @@ export class UserController {
   signUp(@Body(ValidationPipe) userCreationDto: UserCreationDto) {
     return this.userService.signUpWithEmailPassWord(userCreationDto);
   }
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard) // bảo vệ route
   @Get('/me')
   getMe(@Request() req) {

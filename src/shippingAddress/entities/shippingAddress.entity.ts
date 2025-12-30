@@ -7,7 +7,8 @@ export class ShippingAddress {
   id: number;
   @Column()
   shippingAddress: string;
-
+  @Column({ nullable: true })
+  phoneNumber: string;
   @Column()
   userId: number;
 

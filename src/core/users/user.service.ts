@@ -68,7 +68,6 @@ export class UserService {
       password: hashedPassword,
       name: name,
       shippingAddresses: shippingAddress ? [shippingAddress] : [],
-      phoneNumber: userEntity.phoneNumber,
       avatar: userEntity.avatar,
       shippingAddressId: userEntity.shippingAddressId,
     });

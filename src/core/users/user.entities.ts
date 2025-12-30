@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Cart } from 'src/book/entities/cart.entities';
 import { FavoriteBook } from 'src/book/entities/favoriteBook.entities';
 import { Order } from 'src/order/entities/order.entities';
@@ -17,15 +18,15 @@ export class User {
 
   @Column({ unique: true })
   email: string;
-
+  @Exclude()
   @Column({ nullable: true })
   password: string;
   @Column({ nullable: true })
   shippingAddressId: number;
-  @Column({ nullable: true })
-  phoneNumber: string;
+
   @Column({ nullable: true })
   avatar: string;
+  @Exclude()
   @Column({ nullable: true })
   confirmPassword: string;
   @OneToMany(() => FavoriteBook, (favorite) => favorite.user)
