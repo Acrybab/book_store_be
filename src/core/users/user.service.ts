@@ -250,6 +250,7 @@ export class UserService {
         email: user.email,
         avatar: user.avatar,
         favorites: user.favorites,
+        shippingAddresses: user.shippingAddresses,
       },
     };
   }
