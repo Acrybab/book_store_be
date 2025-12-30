@@ -22,10 +22,14 @@ export class ShippingAddressController {
     return await this.shippingAddressService.getShippingAddressesByUserId(req.user.userId);
   }
 
-  @Patch('')
+  @Patch(':addressId')
   @UseGuards(JwtAuthGuard) // bảo vệ route
-  async updateShippingAddress(@Req() req, @Body() updateShippingAddressDto: UpdateShippingAddressDto) {
-    const { addressId, address, phoneNumber } = updateShippingAddressDto;
+  async updateShippingAddress(
+    @Req() req,
+    @Param('addressId') addressId: number,
+    @Body() updateShippingAddressDto: UpdateShippingAddressDto,
+  ) {
+    const { address, phoneNumber } = updateShippingAddressDto;
     return await this.shippingAddressService.updateShippingAddress(
       addressId,
       address,

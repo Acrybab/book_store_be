@@ -4,7 +4,6 @@ export class CreateShippingAddressDto {
   phoneNumber?: string;
 }
 export class UpdateShippingAddressDto {
-  addressId: number;
   address: string;
   phoneNumber?: string;
 }
