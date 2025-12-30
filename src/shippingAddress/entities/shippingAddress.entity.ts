@@ -11,6 +11,8 @@ export class ShippingAddress {
   phoneNumber: string;
   @Column()
   userId: number;
+  @Column({ type: 'boolean', default: false })
+  isDefault: boolean;
 
   @ManyToOne(() => User, (user) => user.shippingAddresses, { onDelete: 'CASCADE' })
   user: User; // mối quan hệ ManyToOne với User

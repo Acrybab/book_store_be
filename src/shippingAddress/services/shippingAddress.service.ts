@@ -16,6 +16,7 @@ export class ShippingAddressService {
       shippingAddress: address,
       userId: userId,
       phoneNumber: phoneNumber,
+      isDefault: true,
     });
     return await this.shippingAddressRepository.save(shippingAddress);
   }
@@ -44,5 +45,19 @@ export class ShippingAddressService {
       throw new Error('Shipping address not found');
     }
     return { message: 'Shipping address deleted successfully' };
+  }
+
+  async setDefaultShippingAddress(userId: number, addressId: number) {
+    // Đặt tất cả các địa chỉ giao hàng của người dùng thành không mặc định
+    await this.shippingAddressRepository.update({ userId }, { isDefault: false });
+
+    // Đặt địa chỉ giao hàng cụ thể thành mặc định
+    const result = await this.shippingAddressRepository.update({ id: addressId, userId }, { isDefault: true });
+
+    if (result.affected === 0) {
+      throw new Error('Shipping address not found or does not belong to the user');
+    }
+
+    return { message: 'Default shipping address updated successfully' };
   }
 }

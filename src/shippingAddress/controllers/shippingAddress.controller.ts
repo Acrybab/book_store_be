@@ -42,4 +42,10 @@ export class ShippingAddressController {
   async deleteShippingAddress(@Param('addressId') addressId: number) {
     return await this.shippingAddressService.deleteShippingAddress(addressId);
   }
+
+  @Post(':addressId/set-default')
+  @UseGuards(JwtAuthGuard) // bảo vệ route
+  async setDefaultShippingAddress(@Req() req, @Param('addressId') addressId: number) {
+    return await this.shippingAddressService.setDefaultShippingAddress(req.user.userId, addressId);
+  }
 }
