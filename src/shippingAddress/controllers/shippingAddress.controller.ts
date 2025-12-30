@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { Body, Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ShippingAddressService } from '../services/shippingAddress.service';
 import { CreateShippingAddressDto, UpdateShippingAddressDto } from '../dto/shippingAddress.dto';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth.guard';
@@ -33,9 +33,9 @@ export class ShippingAddressController {
       req.user.userId as number,
     );
   }
-  @Delete('')
+  @Delete(':addressId')
   @UseGuards(JwtAuthGuard) // bảo vệ route
-  async deleteShippingAddress(@Body() addressId: number) {
+  async deleteShippingAddress(@Param('addressId') addressId: number) {
     return await this.shippingAddressService.deleteShippingAddress(addressId);
   }
 }
