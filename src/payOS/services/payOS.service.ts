@@ -51,7 +51,6 @@ export class PayosService {
         const paidedStatus = await this.paymentRepository.save(payment);
         console.log(paidedStatus, 'paidedStatus');
         // 2. Cập nhật trạng thái order
-        payment.order.status = 'SUCCESS';
         await this.orderRepository.save(payment.order);
 
         // 🧩 3. Lấy userId + bookIds

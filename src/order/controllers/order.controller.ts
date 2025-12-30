@@ -12,10 +12,10 @@ export class OrderController {
     return await this.orderService.createOrder(dto, idToken);
   }
 
-  @Patch(':id/completed')
-  async updateStatus(@Param('id') id: number, @Body('status') status: string) {
-    return this.orderService.completeOrder(id, status);
-  }
+  // @Patch(':id/completed')
+  // async updateStatus(@Param('id') id: number, @Body('status') status: string) {
+  //   return this.orderService.completeOrder(id, status);
+  // }
 
   @Get('/callback/:id')
   async success(@Param('id') orderId: number) {

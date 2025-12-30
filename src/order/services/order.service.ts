@@ -59,7 +59,6 @@ export class OrderService {
     // 🔹 Tạo Order
     const order = this.orderRepository.create({
       totalAmount,
-      status: 'PENDING',
       user: { id: user.id },
       orderItems: items,
       orderDate: new Date(),
@@ -148,19 +147,23 @@ export class OrderService {
     await this.paymentRepository.save(payment);
 
     // Update Order
-    order.status = 'PROCESS';
     await this.orderRepository.save(order);
 
     return { success: true };
   }
 
-  async completeOrder(orderId: number, statusOrder: string) {
-    await this.orderRepository.update(orderId, { status: statusOrder });
-  }
+  // async completeOrder(orderId: number) {
+  //   await this.orderRepository.update(orderId);
+  // }
 
   async retriveOrderHistory(userId: number) {
     const orders = await this.orderRepository.find({
-      where: { user: { id: userId }, status: In(['SUCCESS', 'UNPAID', 'FAILED']) },
+      where: {
+        user: { id: userId },
+        payments: {
+          status: In(['PAID', 'UNPAID']),
+        },
+      },
 
       relations: ['orderItems', 'payments', 'orderItems.book'],
     });

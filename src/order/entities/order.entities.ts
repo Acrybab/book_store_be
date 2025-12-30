@@ -15,8 +15,7 @@ import {
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ default: 'pending' })
-  status: string;
+
   @Column('decimal', { precision: 10, scale: 2, default: 0 })
   totalAmount: number;
   @ManyToOne(() => User, (user) => user.orders)
