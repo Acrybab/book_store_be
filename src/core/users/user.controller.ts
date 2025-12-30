@@ -46,14 +46,6 @@ export class UserController {
 
   @Post('/sign-in')
   async signIn(@Body(ValidationPipe) userSignInDto: UserSignInDto) {
-    // const signInData = await this.userService.handleSignInWithUserId(req);
-
-    // res.cookie('book_token', signInData.user.accessToken, {
-    //   httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-    //   secure: true, // Ensures the cookie is sent only over HTTPS in production
-    //   sameSite: 'none',
-    //   maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
-    // });
     return this.userService.signInWithEmailPassword(userSignInDto.email, userSignInDto.password);
   }
 

@@ -19,16 +19,12 @@ import { Review } from 'src/review/entities/review.entities';
 export class Book {
   @PrimaryGeneratedColumn()
   id: number;
-
   @Column()
   title: string;
-
   @Column()
   author: string;
-
   @Column()
   description: string;
-
   @Column({ nullable: true })
   photo: string;
   @Column({ nullable: true })
@@ -38,9 +34,15 @@ export class Book {
   @Column()
   publisher: string;
   @Column()
-  quantity: number;
+  quantity: string;
   @Column()
   badge: string;
+  @Column()
+  language: string;
+  @Column()
+  numberOfPages: string;
+  @Column()
+  format: string;
   @OneToMany(() => FavoriteBook, (favorite) => favorite.book)
   favorites: FavoriteBook[];
 
@@ -62,8 +64,8 @@ export class Book {
   reviews: Review[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdBookAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedBookAt: Date;
 }

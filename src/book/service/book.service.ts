@@ -53,6 +53,10 @@ export class BookService {
       ...book,
       categories: categories,
       photo: url,
+      quantity: book.quantity,
+      publisher: book.publisher,
+      numberOfPages: book.numberOfPages,
+      format: book.format,
       fileType: file.mimetype,
       price: book.price,
     });
@@ -69,7 +73,7 @@ export class BookService {
       .leftJoinAndSelect('book.reviews', 'reviews')
       .skip(skip)
       .take(limit)
-      .orderBy('book.createdAt', 'ASC');
+      .orderBy('book.createdBookAt', 'ASC');
 
     if (search) {
       query.andWhere(
@@ -117,6 +121,7 @@ export class BookService {
         : existingBook.categories,
       photo: file ? existingBook.photo : existingBook.photo,
       fileType: file ? file.mimetype : existingBook.fileType,
+      quantity: book.quantity,
     });
 
     if (file) {

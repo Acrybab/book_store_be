@@ -26,6 +26,21 @@ export class CreateBookDto {
   @IsNotEmpty()
   @IsString()
   badge: string;
+  @IsNotEmpty()
+  @IsString()
+  quantity: string;
+  @IsNotEmpty()
+  @IsString()
+  publisher: string;
+  @IsNotEmpty()
+  @IsString()
+  language: string;
+  @IsNotEmpty()
+  @IsString()
+  format: string;
+  @IsNotEmpty()
+  @IsString()
+  numberOfPages: string;
 }
 
 export class AddToCartDto {
