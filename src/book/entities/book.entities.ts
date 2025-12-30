@@ -34,7 +34,7 @@ export class Book {
   @Column()
   publisher: string;
   @Column()
-  quantity: string;
+  stockQuantity: string;
   @Column()
   badge: string;
   @Column()

@@ -28,7 +28,7 @@ export class CreateBookDto {
   badge: string;
   @IsNotEmpty()
   @IsString()
-  quantity: string;
+  stockQuantity: string;
   @IsNotEmpty()
   @IsString()
   publisher: string;

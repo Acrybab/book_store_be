@@ -53,7 +53,7 @@ export class BookService {
       ...book,
       categories: categories,
       photo: url,
-      quantity: book.quantity,
+      stockQuantity: book.stockQuantity,
       publisher: book.publisher,
       numberOfPages: book.numberOfPages,
       format: book.format,
@@ -121,7 +121,7 @@ export class BookService {
         : existingBook.categories,
       photo: file ? existingBook.photo : existingBook.photo,
       fileType: file ? file.mimetype : existingBook.fileType,
-      quantity: book.quantity,
+      stockQuantity: book.stockQuantity,
     });
 
     if (file) {
