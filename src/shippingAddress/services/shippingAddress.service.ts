@@ -16,7 +16,7 @@ export class ShippingAddressService {
       shippingAddress: address,
       userId: userId,
       phoneNumber: phoneNumber,
-      isDefault: true,
+      isDefault: false,
     });
     return await this.shippingAddressRepository.save(shippingAddress);
   }
