@@ -10,6 +10,7 @@ export class ShippingAddressController {
   constructor(private readonly shippingAddressService: ShippingAddressService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard) // bảo vệ route
   async createShippingAddress(@Body() createShippingAddressDto: CreateShippingAddressDto) {
     const { userId, address, phoneNumber } = createShippingAddressDto;
     return await this.shippingAddressService.createShippingAddress(userId, address, phoneNumber);
