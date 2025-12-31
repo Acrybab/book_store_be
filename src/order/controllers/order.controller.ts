@@ -7,15 +7,10 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  async create(@Body() dto: CreateOrderDto, @Body('idToken') idToken?: string) {
+  async create(@Body() dto: CreateOrderDto) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await this.orderService.createOrder(dto, idToken);
+    return await this.orderService.createOrder(dto);
   }
-
-  // @Patch(':id/completed')
-  // async updateStatus(@Param('id') id: number, @Body('status') status: string) {
-  //   return this.orderService.completeOrder(id, status);
-  // }
 
   @Get('/callback/:id')
   async success(@Param('id') orderId: number) {

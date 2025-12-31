@@ -4,8 +4,7 @@ import { OrderItemDto } from 'src/orderItem/dto/orderItem.dto';
 
 export class CreateOrderDto {
   userId: number;
-  shippingAddress: string;
-  phone: string;
+  shippingAddressId: number;
   note?: string;
   @IsArray()
   @ValidateNested({ each: true })

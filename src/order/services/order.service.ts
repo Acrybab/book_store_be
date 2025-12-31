@@ -32,8 +32,7 @@ export class OrderService {
     return order?.id;
   }
 
-  async createOrder(dto: CreateOrderDto, idToken?: string): Promise<any> {
-    console.log(idToken);
+  async createOrder(dto: CreateOrderDto): Promise<any> {
     const user = await this.userRepository.findOneBy({ id: dto.userId });
     if (!user) throw new NotFoundException('User not found');
 
@@ -60,6 +59,7 @@ export class OrderService {
     const order = this.orderRepository.create({
       totalAmount,
       user: { id: user.id },
+      shippingAddressId: dto.shippingAddressId,
       orderItems: items,
       orderDate: new Date(),
     });
@@ -76,9 +76,10 @@ export class OrderService {
     let checkoutUrl: string | null = null;
 
     if (dto.paymentMethod === 'PAYOS') {
+      const orderCode = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
       // gọi PayOS để tạo link thanh toán
       const payosLink = await this.payosService.createPaymentLink(
-        order.id, // orderCode = id order
+        orderCode, // orderCode = id order
         totalAmount,
         `Thanh toán đơn hàng #${order.id}`,
       );
@@ -95,15 +96,6 @@ export class OrderService {
         transactionId: payosLink.paymentLinkId, // id từ PayOS
       });
     } else {
-      // COD
-      // let phoneIntl = dto.phone;
-
-      // // Nếu số bắt đầu bằng 0 (VN) → đổi sang +84
-      // if (phoneIntl.startsWith('0')) {
-      //   phoneIntl = '+84' + phoneIntl.slice(1);
-      // }
-
-      // await this.twilioService.sendVerification(phoneIntl);
       payment = this.paymentRepository.create({
         order,
         method: 'COD',
@@ -165,7 +157,7 @@ export class OrderService {
         },
       },
 
-      relations: ['orderItems', 'payments', 'orderItems.book'],
+      relations: ['orderItems', 'payments', 'orderItems.book', 'user', 'shippingAddress'],
     });
     return {
       data: orders,
