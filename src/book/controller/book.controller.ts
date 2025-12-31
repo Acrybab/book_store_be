@@ -96,18 +96,12 @@ export class BookController {
       cartItem: addedBookToCart,
     };
   }
-  // @Get('photo/:photoName')
-  // getBookPhoto(@Param('photoName') photoName: string, @Res() res) {
-  //   // return this.bookService.getBookPhoto(photoName).then((fileBuffer) => {
-  //   //   res.setHeader('Content-Type', 'image/jpeg'); // Hoặc loại MIME phù hợp với ảnh của bạn
-  //   //   res.send(fileBuffer);
-  //   // });
-  //   // console.log(process.cwd(), 'cwd');
-  //   const filePath = path.join('D:\\LearnNestjs\\BookStore\\project-name\\uploads', photoName);
-  //   if (!fs.existsSync(filePath)) {
-  //     throw new Error('File không tồn tại');
-  //   }
 
-  //   return res.sendFile(filePath);
-  // }
+  @Delete('cart/:bookId')
+  async deleteCartItem(@Param('bookId') bookId: number) {
+    await this.bookService.deleteCartDetailItem(bookId);
+    return {
+      message: 'Cart item deleted successfully',
+    };
+  }
 }

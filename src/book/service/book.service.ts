@@ -258,7 +258,6 @@ export class BookService {
     const cartDetail = await this.cartRepository.find({
       where: {
         user: { id: userId },
-        orderStatus: 'PENDING',
       },
       relations: ['book', 'user', 'book.orderItems', 'book.orderItems.order', 'book.orderItems.order.payments'],
     });
@@ -266,6 +265,19 @@ export class BookService {
     return {
       message: 'Cart detail retrieved successfully',
       data: cartDetail,
+    };
+  }
+
+  // async deleteCartDetailItem(cartId: number) {}
+
+  async deleteCartDetailItem(bookId: number) {
+    const cartItem = await this.cartRepository.findOne({ where: { bookId } });
+    if (!cartItem) {
+      throw new NotFoundException('Cart item not found');
+    }
+    await this.cartRepository.remove(cartItem);
+    return {
+      message: 'Cart item removed successfully',
     };
   }
 }
