@@ -60,16 +60,11 @@ export class UserService {
     }
     const saltRounds = 10; // higher = more secure but slower
     const hashedPassword = await bcrypt.hash(password || '', saltRounds);
-    const shippingAddress = await this.shippingAddressRepository.findOne({
-      where: { id: userEntity.shippingAddressId },
-    });
+
     const user = this.userRepository.create({
       email: email,
       password: hashedPassword,
       name: name,
-      shippingAddresses: shippingAddress ? [shippingAddress] : [],
-      avatar: userEntity.avatar,
-      shippingAddressId: userEntity.shippingAddressId,
     });
 
     const payload = { sub: user.id, email: email || '' };
@@ -77,18 +72,7 @@ export class UserService {
       expiresIn: '1d',
       secret: process.env.MY_SECRET_KEY || 'default-secret',
     });
-    // const mailerSend = new MailerSend({
-    //   apiKey: process.env.MAILER_SEND!,
-    // });
-    // const sentForm = new Sender('info@test-r83ql3pjmezgzw1j.mlsender.net', 'Book Store');
-    // const recipient = [new Recipient(email as string)];
-    // const emailParams = new EmailParams()
-    //   .setFrom(sentForm)
-    //   .setTo(recipient)
-    //   .setSubject('Welcome to Book Store!')
-    //   .setHtml(htmlContent(email as string));
 
-    // await mailerSend.email.send(emailParams);
     await this.userRepository.save(user);
 
     return {
