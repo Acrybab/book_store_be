@@ -13,7 +13,9 @@ export class Payment {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
+  // Trong Payment entity
+  @Column({ type: 'varchar', length: 50, unique: true, nullable: true })
+  payosOrderCode: string; // Lưu orderCode ngẫu nhiên gửi sang PayOS
   @Column({ type: 'timestamp', nullable: true })
   updatedAt: Date;
   @Column({ unique: true, nullable: true })

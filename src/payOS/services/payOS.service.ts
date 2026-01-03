@@ -38,10 +38,10 @@ export class PayosService {
     console.log('Raw webhook data:', payosData);
 
     const { orderCode, desc } = payosData.data;
-
+    console.log(orderCode);
     if (desc === 'success') {
       const payment = await this.paymentRepository.findOne({
-        where: { order: { id: orderCode } },
+        where: { payosOrderCode: orderCode },
         relations: ['order', 'order.user', 'order.orderItems', 'order.orderItems.book'],
       });
 
@@ -51,6 +51,7 @@ export class PayosService {
         const paidedStatus = await this.paymentRepository.save(payment);
         console.log(paidedStatus, 'paidedStatus');
         // 2. Cập nhật trạng thái order
+        payment.order.orderStatus = 'PENDING';
         await this.orderRepository.save(payment.order);
 
         // 🧩 3. Lấy userId + bookIds
@@ -69,9 +70,5 @@ export class PayosService {
     }
 
     return { message: 'Webhook processed successfully' };
-  }
-
-  verifyWebhook(payload: any) {
-    return this.payos.verifyPaymentWebhookData(payload);
   }
 }

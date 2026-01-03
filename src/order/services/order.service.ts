@@ -76,10 +76,10 @@ export class OrderService {
     let checkoutUrl: string | null = null;
 
     if (dto.paymentMethod === 'PAYOS') {
-      const orderCode = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`);
-      // gọi PayOS để tạo link thanh toán
+      const orderCode = `${Date.now()}${Math.floor(Math.random() * 1000)}`; // gọi PayOS để tạo link thanh toán
+      console.log(Number(orderCode));
       const payosLink = await this.payosService.createPaymentLink(
-        orderCode, // orderCode = id order
+        Number(orderCode), // orderCode = id order
         totalAmount,
         `Thanh toán đơn hàng #${order.id}`,
       );
@@ -93,6 +93,7 @@ export class OrderService {
         status: 'UNPAID',
         createdAt: new Date(),
         updatedAt: new Date(),
+        payosOrderCode: orderCode,
         transactionId: payosLink.paymentLinkId, // id từ PayOS
       });
     } else {

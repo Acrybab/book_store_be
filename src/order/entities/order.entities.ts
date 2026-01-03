@@ -24,6 +24,9 @@ export class Order {
   @Column({ nullable: true })
   shippingAddressId: number;
 
+  @Column({ type: 'enum', enum: ['PENDING', 'SHIPPED', 'DELIVERED', 'CANCELLED'], default: 'PENDING' })
+  orderStatus: 'PENDING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+
   @ManyToOne(() => ShippingAddress, (shippingAddress) => shippingAddress.orders, { nullable: true })
   @JoinColumn({ name: 'shippingAddressId' }) // ⭐ QUAN TRỌNG
   shippingAddress: ShippingAddress;
