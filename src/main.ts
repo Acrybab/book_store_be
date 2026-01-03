@@ -20,9 +20,9 @@ async function bootstrap() {
   // });
   // const filePath = path.join('D:\\LearnNestjs\\BookStore\\project-name\\uploads', photoName);
 
-  app.useStaticAssets(join('D:\\LearnNestjs\\BookStore\\project-name\\uploads'), {
-    prefix: '/uploads/',
-  });
+  // app.useStaticAssets(join('D:\\LearnNestjs\\BookStore\\project-name\\uploads'), {
+  //   prefix: '/uploads/',
+  // });
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
