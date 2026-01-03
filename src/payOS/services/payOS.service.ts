@@ -28,7 +28,7 @@ export class PayosService {
       orderCode, // mã đơn hàng (unique)
       amount, // số tiền
       description, // mô tả đơn hàng
-      returnUrl: `http://localhost:3000/order/call-back/${orderCode}`, // callback khi user thanh toán xong
+      returnUrl: `https://bookshop-trong-khang.vercel.app/order/call-back/${orderCode}`, // callback khi user thanh toán xong
       cancelUrl: 'https://bookshop-trong-khang.vercel.app/order/cancel', // callback khi user hủy
     });
     return paymentLink;
