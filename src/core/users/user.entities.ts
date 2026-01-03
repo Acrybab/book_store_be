@@ -35,10 +35,11 @@ export class User {
   cartItems: Cart[];
   @OneToMany(() => Rating, (rating) => rating.user)
   ratings: Rating[];
-  @OneToMany(() => Order, (order) => order.user)
-  orders: Order[];
-  @OneToMany(() => ShippingAddress, (address) => address.user)
+  @OneToMany(() => ShippingAddress, (address) => address.user, { cascade: true, onDelete: 'CASCADE' })
   shippingAddresses: ShippingAddress[];
+
+  @OneToMany(() => Order, (order) => order.user, { cascade: true, onDelete: 'CASCADE' })
+  orders: Order[];
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
   @OneToMany(() => Reply, (reply) => reply.user)

@@ -9,10 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { MailService } from 'src/common/services/mail.service';
-import { htmlContent } from 'src/common/services/htmlcontent';
+// import { htmlContent } from 'src/common/services/htmlcontent';
 import { SupabaseService } from 'src/book/service/supabase.service';
 // import { Resend } from 'resend';
-import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
+// import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
 type SignUpParams = {
   name: string;
@@ -77,18 +77,18 @@ export class UserService {
       expiresIn: '1d',
       secret: process.env.MY_SECRET_KEY || 'default-secret',
     });
-    const mailerSend = new MailerSend({
-      apiKey: process.env.MAILER_SEND!,
-    });
-    const sentForm = new Sender('info@test-r83ql3pjmezgzw1j.mlsender.net', 'Book Store');
-    const recipient = [new Recipient(email as string)];
-    const emailParams = new EmailParams()
-      .setFrom(sentForm)
-      .setTo(recipient)
-      .setSubject('Welcome to Book Store!')
-      .setHtml(htmlContent(email as string));
+    // const mailerSend = new MailerSend({
+    //   apiKey: process.env.MAILER_SEND!,
+    // });
+    // const sentForm = new Sender('info@test-r83ql3pjmezgzw1j.mlsender.net', 'Book Store');
+    // const recipient = [new Recipient(email as string)];
+    // const emailParams = new EmailParams()
+    //   .setFrom(sentForm)
+    //   .setTo(recipient)
+    //   .setSubject('Welcome to Book Store!')
+    //   .setHtml(htmlContent(email as string));
 
-    await mailerSend.email.send(emailParams);
+    // await mailerSend.email.send(emailParams);
     await this.userRepository.save(user);
 
     return {
