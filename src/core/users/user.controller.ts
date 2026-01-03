@@ -4,7 +4,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Header,
   Patch,
   Post,
   Req,
@@ -26,7 +25,6 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('/sign-up')
-  @Header('Access-Control-Allow-Origin', 'http://localhost:3000')
   signUp(@Body(ValidationPipe) userCreationDto: UserCreationDto) {
     return this.userService.signUpWithEmailPassWord(userCreationDto);
   }
