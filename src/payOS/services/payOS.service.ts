@@ -3,6 +3,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import PayOS from '@payos/node';
+import { Book } from 'src/book/entities/book.entities';
 import { Cart } from 'src/book/entities/cart.entities';
 import { Order } from 'src/order/entities/order.entities';
 import { Payment } from 'src/payment/entities/payment.entities';
@@ -19,6 +20,8 @@ export class PayosService {
     private paymentRepository: Repository<Payment>,
     @InjectRepository(Cart)
     private readonly cartRepository: Repository<Cart>,
+    @InjectRepository(Book)
+    private readonly bookRepository: Repository<Book>,
   ) {
     this.payos = new PayOS(process.env.PAYOS_CLIENT_ID!, process.env.PAYOS_API_KEY!, process.env.PAYOS_CHECKSUM_KEY!);
   }
@@ -53,16 +56,18 @@ export class PayosService {
         // 2. Cập nhật trạng thái order
         payment.order.orderStatus = 'PENDING';
 
-        payment.order.orderItems.forEach((item) => {
-          item.book.stockQuantity = String(Number(item.book.stockQuantity) - item.quantity);
-        });
-
         await this.orderRepository.save(payment.order);
 
         // 🧩 3. Lấy userId + bookIds
         const userId = payment.order.user.id;
         const bookIds = payment.order.orderItems.map((item) => item.book.id);
-
+        for (const item of payment.order.orderItems) {
+          const book = await this.bookRepository.findOne({ where: { id: item.book.id } });
+          if (book) {
+            book.stockQuantity = String(Number(book.stockQuantity) - item.quantity);
+            await this.bookRepository.save(book);
+          }
+        }
         // Debug log (rất quan trọng!)
         console.log('Deleting cart for:', { userId, bookIds });
 
