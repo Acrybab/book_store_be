@@ -14,6 +14,7 @@ import { Category } from 'src/categories/entities/categories.entities';
 import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
 import { Rating } from 'src/rating/entities/rating.entities';
 import { Review } from 'src/review/entities/review.entities';
+import { Promotion } from 'src/promotion/entities/promotion.entities';
 
 @Entity('books')
 export class Book {
@@ -55,6 +56,14 @@ export class Book {
     inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
   })
   categories: Category[];
+
+  @ManyToMany(() => Promotion, (promotion) => promotion.books)
+  @JoinTable({
+    name: 'book_promotions', // bảng trung gian
+    joinColumn: { name: 'book_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'promotion_id', referencedColumnName: 'discountId' },
+  })
+  promotions: Promotion[];
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.book)
   orderItems: OrderItem[];

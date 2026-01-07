@@ -52,6 +52,11 @@ export class PayosService {
         console.log(paidedStatus, 'paidedStatus');
         // 2. Cập nhật trạng thái order
         payment.order.orderStatus = 'PENDING';
+
+        payment.order.orderItems.forEach((item) => {
+          item.book.stockQuantity = String(Number(item.book.stockQuantity) - item.quantity);
+        });
+
         await this.orderRepository.save(payment.order);
 
         // 🧩 3. Lấy userId + bookIds

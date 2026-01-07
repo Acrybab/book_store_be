@@ -2,6 +2,7 @@ import { Exclude } from 'class-transformer';
 import { Cart } from 'src/book/entities/cart.entities';
 import { FavoriteBook } from 'src/book/entities/favoriteBook.entities';
 import { Order } from 'src/order/entities/order.entities';
+import { Promotion } from 'src/promotion/entities/promotion.entities';
 import { Rating } from 'src/rating/entities/rating.entities';
 import { Reply } from 'src/reply/entities/reply.entities';
 import { Review } from 'src/review/entities/review.entities';
@@ -44,4 +45,6 @@ export class User {
   reviews: Review[];
   @OneToMany(() => Reply, (reply) => reply.user)
   replies: Reply[];
+  @OneToMany(() => Promotion, (promotion) => promotion.user)
+  promotions: Promotion[];
 }

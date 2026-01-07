@@ -7,8 +7,8 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
 import bcrypt from 'bcrypt';
-import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
-import { MailService } from 'src/common/services/mail.service';
+// import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
+// import { MailService } from 'src/common/services/mail.service';
 // import { htmlContent } from 'src/common/services/htmlcontent';
 import { SupabaseService } from 'src/book/service/supabase.service';
 // import { Resend } from 'resend';
@@ -26,12 +26,12 @@ type SignUpParams = {
 export class UserService {
   constructor(
     private jwtService: JwtService,
-    private readonly mailService: MailService,
+    // private readonly mailService: MailService,
     private readonly supabaseService: SupabaseService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(ShippingAddress)
-    private shippingAddressRepository: Repository<ShippingAddress>,
+    // @InjectRepository(ShippingAddress)
+    // private shippingAddressRepository: Repository<ShippingAddress>,
   ) {}
 
   async findUserByEmail(email: string) {

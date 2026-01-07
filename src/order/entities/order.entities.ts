@@ -1,12 +1,15 @@
 import { User } from 'src/core/users/user.entities';
 import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
 import { Payment } from 'src/payment/entities/payment.entities';
+import { Promotion } from 'src/promotion/entities/promotion.entities';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -45,4 +48,11 @@ export class Order {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  @ManyToMany(() => Promotion, (promotion) => promotion.orders)
+  @JoinTable({
+    name: 'order_promotions', // bảng trung gian
+    joinColumn: { name: 'order_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'promotion_id', referencedColumnName: 'discountId' },
+  })
+  promotions: Promotion[];
 }

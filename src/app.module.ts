@@ -35,6 +35,8 @@ import { Review } from './review/entities/review.entities';
 import { ReviewModule } from './review/review.module';
 import { ReplyModule } from './reply/reply.module';
 import { Reply } from './reply/entities/reply.entities';
+import { Promotion } from './promotion/entities/promotion.entities';
+import { PromotionModule } from './promotion/promotion.module';
 // import { PaymentController } from './vnpay/controller/payment.controller';
 
 @Module({
@@ -63,6 +65,7 @@ import { Reply } from './reply/entities/reply.entities';
         ShippingAddress,
         Review,
         Reply,
+        Promotion,
       ],
       synchronize: true,
     }),
@@ -80,6 +83,7 @@ import { Reply } from './reply/entities/reply.entities';
     CommonModule,
     ReviewModule,
     ReplyModule,
+    PromotionModule,
     // AuthModule,
   ],
 
