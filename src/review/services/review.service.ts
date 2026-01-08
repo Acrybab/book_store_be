@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookService } from 'src/book/service/book.service';
 import { UserService } from 'src/core/users/user.service';
@@ -63,12 +63,10 @@ export class ReviewService {
     const completedOrders = await this.orderService.findOrdersByUserId(userId);
 
     if (!completedOrders) {
-      return {
-        canReview: false,
-        message: 'User has not completed any orders',
-      };
+      throw new BadRequestException('User has no completed orders');
     }
     for (const order of completedOrders) {
+      console.log(completedOrders);
       for (const item of order.orderItems) {
         if (item.book.id === bookId) {
           return {
@@ -78,10 +76,7 @@ export class ReviewService {
         }
       }
     }
-    return {
-      canReview: false,
-      message: 'User has not purchased this book',
-    };
+    throw new BadRequestException('User has not purchased this book');
   }
 
   async makeReview(userId: number, makeReviewDTO: MakeReviewDTO) {

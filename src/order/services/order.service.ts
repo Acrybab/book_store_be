@@ -35,7 +35,12 @@ export class OrderService {
   async findOrdersByUserId(userId: number) {
     const orders = await this.orderRepository.find({
       where: { user: { id: userId }, orderStatus: 'DELIVERED' },
-      relations: ['orderItems', 'payments', 'orderItems.book'], // <-- BẮT BUỘC: Tải Book bên trong OrderItems để có thể truy cập item.book.id],
+      // Chắc chắn rằng tên mối quan hệ (orderItems, payments, orderItems.book) là chính xác
+      relations: [
+        'orderItems',
+        'payments',
+        'orderItems.book', // Tải sâu: Order -> OrderItems -> Book
+      ],
     });
     return orders;
   }
