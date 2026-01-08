@@ -6,15 +6,15 @@ import { UserService } from 'src/core/users/user.service';
 import { Review } from '../entities/review.entities';
 import { Repository } from 'typeorm';
 import { MakeReviewDTO } from '../dto/review.dto';
-import { ReactReviewService } from './react_review.service';
 import OpenAI from 'openai';
+import { OrderService } from 'src/order/services/order.service';
 
 @Injectable()
 export class ReviewService {
   constructor(
     private readonly userService: UserService,
     private readonly bookService: BookService,
-    private readonly reactReviewService: ReactReviewService,
+    private readonly orderService: OrderService,
     @InjectRepository(Review)
     private readonly reviewRepository: Repository<Review>,
   ) {}
@@ -57,6 +57,31 @@ export class ReviewService {
         error: 'OPENAI_RATE_LIMIT',
       };
     }
+  }
+
+  async canReview(userId: number, bookId: number) {
+    const completedOrders = await this.orderService.findOrdersByUserId(userId);
+
+    if (!completedOrders) {
+      return {
+        canReview: false,
+        message: 'User has not completed any orders',
+      };
+    }
+    for (const order of completedOrders) {
+      for (const item of order.orderItems) {
+        if (item.book.id === bookId) {
+          return {
+            canReview: true,
+            message: 'User can review this book',
+          };
+        }
+      }
+    }
+    return {
+      canReview: false,
+      message: 'User has not purchased this book',
+    };
   }
 
   async makeReview(userId: number, makeReviewDTO: MakeReviewDTO) {

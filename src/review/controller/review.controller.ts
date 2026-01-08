@@ -11,6 +11,15 @@ export class ReviewController {
   @Post('')
   async makeReview(@Req() req, @Body() makeReviewDTO: MakeReviewDTO) {
     const userID = req.user.userId as number;
+
+    const allowedOrders = await this.reviewService.canReview(userID, makeReviewDTO.bookId);
+
+    if (!allowedOrders.canReview) {
+      return {
+        message: allowedOrders.message,
+      };
+    }
+
     const newReview = await this.reviewService.makeReview(userID, makeReviewDTO);
     return {
       message: 'Review created successfully',

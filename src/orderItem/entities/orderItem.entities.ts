@@ -1,6 +1,7 @@
 import { Book } from 'src/book/entities/book.entities';
 import { Order } from 'src/order/entities/order.entities';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Review } from 'src/review/entities/review.entities';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('order_items')
 export class OrderItem {
@@ -21,6 +22,7 @@ export class OrderItem {
 
   @Column('decimal', { precision: 10, scale: 2, default: 0 })
   subTotal: number;
-
+  @OneToOne(() => Review, (review) => review.orderItem)
+  review: Review;
   // Define your columns and relationships here
 }

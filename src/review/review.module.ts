@@ -17,6 +17,11 @@ import { MailService } from 'src/common/services/mail.service';
 import { ShippingAddress } from 'src/shippingAddress/entities/shippingAddress.entity';
 import { ReactReviewService } from './services/react_review.service';
 import { ReactReviewController } from './controller/react_review.controller';
+import { OrderService } from 'src/order/services/order.service';
+import { Order } from 'src/order/entities/order.entities';
+import { OrderItem } from 'src/orderItem/entities/orderItem.entities';
+import { Payment } from 'src/payment/entities/payment.entities';
+import { PayosService } from 'src/payOS/services/payOS.service';
 
 @Module({
   imports: [
@@ -30,9 +35,21 @@ import { ReactReviewController } from './controller/react_review.controller';
       Cart,
       Category,
       ShippingAddress,
+      Order,
+      OrderItem,
+      Payment,
     ]),
   ],
-  providers: [ReviewService, BookService, UserService, SupabaseService, MailService, ReactReviewService],
+  providers: [
+    ReviewService,
+    BookService,
+    UserService,
+    SupabaseService,
+    MailService,
+    ReactReviewService,
+    OrderService,
+    PayosService,
+  ],
   controllers: [ReviewController, ReactReviewController],
   exports: [],
 })
