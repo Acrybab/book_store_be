@@ -58,6 +58,16 @@ export class OrderService {
     return order;
   }
 
+  async getOrderById(orderId: number) {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['orderItems', 'payments', 'user', 'shippingAddress'],
+    });
+    console.log(order);
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
+  }
+
   async createOrder(dto: CreateOrderDto): Promise<any> {
     const user = await this.userRepository.findOneBy({ id: dto.userId });
     if (!user) throw new NotFoundException('User not found');

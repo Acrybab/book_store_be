@@ -11,6 +11,11 @@ export class OrderController {
     return await this.orderService.getOrderDetails(orderCode);
   }
 
+  @Get('/cod/:orderId')
+  async getOrderById(@Param('orderId') orderId: number) {
+    return await this.orderService.getOrderById(orderId);
+  }
+
   @Post()
   async create(@Body() dto: CreateOrderDto) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
