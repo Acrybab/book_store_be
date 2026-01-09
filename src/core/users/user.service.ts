@@ -77,7 +77,7 @@ export class UserService {
       { expiresIn: '1h', secret: process.env.MY_SECRET_KEY },
     );
 
-    const verificationUrl = `https://bookshop-trong-khang.vercel.app/verify?token=${verifyToken}`;
+    const verificationUrl = `https://bookshop-trong-khang.vercel.app/verify-email?token=${verifyToken}`;
 
     await this.mailService.sendHTMLEmail({
       to: email || '',
