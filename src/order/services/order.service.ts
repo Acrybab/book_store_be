@@ -190,7 +190,7 @@ export class OrderService {
       where: {
         user: { id: userId },
         payments: {
-          status: In(['PAID', 'UNPAID']),
+          status: In(['PAID', 'UNPAID', 'PENDING']),
         },
       },
 
