@@ -1,28 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
-import sgMail from '@sendgrid/mail';
 import { SendHTMLEmail } from '../types';
+import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class MailService {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+  private transporter: nodemailer.Transporter;
+  constructor(private configService: ConfigService) {
+    this.transporter = nodemailer.createTransport({
+      host: this.configService.get<string>('SMTP_HOST'),
+      port: Number(this.configService.get<string>('SMTP_PORT')),
+      secure: false,
+      auth: {
+        user: this.configService.get<string>('SMTP_USER'),
+        pass: this.configService.get<string>('SMTP_PASS'), // Sửa từ SMTP_PASSWORD thành SMTP_PASS
+      },
+    });
   }
 
   async sendHTMLEmail({ to, subject, htmlContent }: SendHTMLEmail): Promise<void> {
-    console.log(process.env.MAIL_FROM, 'aaaa');
+    const fromEmail = this.configService.get<string>('SMTP_USER');
 
     const msg = {
       to,
-      from: {
-        email: process.env.MAIL_FROM as string, // đã verify trong SendGrid
-        name: 'Book Store',
-      },
+      from: `${fromEmail}`,
       subject,
       html: htmlContent,
     };
 
     try {
-      await sgMail.send(msg);
+      await this.transporter.sendMail(msg);
       console.log(`✅ Email sent to ${to}`);
     } catch (error) {
       console.error('❌ Error sending email:', error);

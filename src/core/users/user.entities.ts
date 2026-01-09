@@ -24,7 +24,8 @@ export class User {
   password: string;
   @Column({ nullable: true })
   shippingAddressId: number;
-
+  @Column({ default: false })
+  isVerified: boolean;
   @Column({ nullable: true })
   avatar: string;
   @Exclude()

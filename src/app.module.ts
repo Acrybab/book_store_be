@@ -42,6 +42,8 @@ import { PromotionModule } from './promotion/promotion.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true, // dùng toàn project
+
       envFilePath: ['.env.development', '.env'],
     }),
     TypeOrmModule.forRoot({
@@ -68,9 +70,6 @@ import { PromotionModule } from './promotion/promotion.module';
         Promotion,
       ],
       synchronize: true,
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true, // dùng toàn project
     }),
     UserModule,
     BookModule,

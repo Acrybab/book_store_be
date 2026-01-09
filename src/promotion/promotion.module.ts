@@ -11,10 +11,11 @@ import { Book } from 'src/book/entities/book.entities';
 import { FavoriteBook } from 'src/book/entities/favoriteBook.entities';
 import { Cart } from 'src/book/entities/cart.entities';
 import { Category } from 'src/categories/entities/categories.entities';
+import { MailService } from 'src/common/services/mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Promotion, User, Book, FavoriteBook, Cart, Category])],
   controllers: [PromotionController],
-  providers: [PromotionService, UserService, SupabaseService, BookService],
+  providers: [PromotionService, UserService, SupabaseService, BookService, MailService],
 })
 export class PromotionModule {}

@@ -6,6 +6,7 @@ import {
   Get,
   Patch,
   Post,
+  Query,
   Req,
   Request,
   Response,
@@ -35,6 +36,11 @@ export class UserController {
     // console.log(req.user);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.userService.getMe(req.user.userId);
+  }
+
+  @Get('verify')
+  async verifyEmail(@Query('token') token: string) {
+    return await this.userService.verifyEmail(token);
   }
 
   @Get()

@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Body, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entities';
 import { Repository } from 'typeorm';
@@ -11,6 +12,8 @@ import bcrypt from 'bcrypt';
 // import { MailService } from 'src/common/services/mail.service';
 // import { htmlContent } from 'src/common/services/htmlcontent';
 import { SupabaseService } from 'src/book/service/supabase.service';
+import { MailService } from 'src/common/services/mail.service';
+import { htmlContent } from 'src/common/services/htmlcontent';
 // import { Resend } from 'resend';
 // import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
@@ -26,7 +29,7 @@ type SignUpParams = {
 export class UserService {
   constructor(
     private jwtService: JwtService,
-    // private readonly mailService: MailService,
+    private readonly mailService: MailService,
     private readonly supabaseService: SupabaseService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -54,38 +57,67 @@ export class UserService {
 
     const userExists = await this.findUserByEmail(email || '');
     if (userExists) {
-      return {
-        message: 'User already exists',
-      };
+      throw new BadRequestException('User already exists');
     }
-    const saltRounds = 10; // higher = more secure but slower
-    const hashedPassword = await bcrypt.hash(password || '', saltRounds);
 
+    const hashedPassword = await bcrypt.hash(password || '', 10);
+
+    // Tạo user với trạng thái isVerified = false
     const user = this.userRepository.create({
-      email: email,
+      email,
       password: hashedPassword,
-      name: name,
+      name,
+      isVerified: false,
+    });
+    await this.userRepository.save(user); // Lưu trước để có ID
+
+    // Tạo token xác thực (dùng JWT hoặc chuỗi ngẫu nhiên)
+    const verifyToken = await this.jwtService.signAsync(
+      { sub: user.id, email: user.email },
+      { expiresIn: '1h', secret: process.env.MY_SECRET_KEY },
+    );
+
+    const verificationUrl = `https://bookshop-trong-khang.vercel.app/verify?token=${verifyToken}`;
+
+    await this.mailService.sendHTMLEmail({
+      to: email || '',
+      subject: '📚 [Book Store] Xác thực tài khoản của bạn',
+      htmlContent: `
+      <h2>Chào mừng ${name}!</h2>
+      <p>Vui lòng click vào nút bên dưới để kích hoạt tài khoản:</p>
+      <a href="${verificationUrl}" style="background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Xác thực ngay</a>
+      <p>Link này sẽ hết hạn sau 1 giờ.</p>
+    `,
     });
 
-    const payload = { sub: user.id, email: email || '' };
-    const token = await this.jwtService.signAsync(payload, {
-      expiresIn: '1d',
-      secret: process.env.MY_SECRET_KEY || 'default-secret',
-    });
+    return { message: 'Đăng ký thành công. Vui lòng kiểm tra email để kích hoạt tài khoản.' };
+  }
 
-    await this.userRepository.save(user);
+  async verifyEmail(token: string) {
+    try {
+      // 1. Giải mã token
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.MY_SECRET_KEY,
+      });
 
-    return {
-      data: {
-        message: 'Sign Up Successful',
-        user: {
-          id: user.id,
-          email: user.email,
-          userName: user.name,
-        },
-        accessToken: token,
-      },
-    };
+      // 2. Tìm user
+      const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+      if (!user) throw new BadRequestException('Người dùng không tồn tại');
+
+      if (user.isVerified) {
+        return { message: 'Tài khoản đã được xác thực từ trước.' };
+      }
+
+      // 3. Cập nhật trạng thái
+      user.isVerified = true;
+      await this.userRepository.save(user);
+
+      return {
+        message: 'Xác thực thành công! Bạn có thể đăng nhập ngay bây giờ.',
+      };
+    } catch (error) {
+      throw new BadRequestException('Link xác nhận không hợp lệ hoặc đã hết hạn.');
+    }
   }
 
   async createUser(user: Partial<User>) {
@@ -188,11 +220,16 @@ export class UserService {
 
   async signInWithEmailPassword(email: string, password: string) {
     const user = await this.findUserByEmail(email);
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!user.isVerified) {
+      throw new UnauthorizedException('Please verify your email before signing in.');
+    }
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
