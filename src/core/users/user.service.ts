@@ -153,7 +153,7 @@ export class UserService {
       { expiresIn: '1h', secret: process.env.MY_SECRET_KEY },
     );
 
-    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+    const resetUrl = `https://bookshop-trong-khang.vercel.app/reset-password?token=${resetToken}`;
 
     await this.mailService.sendHTMLEmail({
       to: forgotPassword.email,
