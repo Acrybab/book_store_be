@@ -15,6 +15,7 @@ import { SupabaseService } from 'src/book/service/supabase.service';
 import { MailService } from 'src/common/services/mail.service';
 import { htmlContent } from 'src/common/services/htmlcontent';
 import { access } from 'fs';
+import { ForgotPasswordDto } from './dto/UserCreation.dto';
 // import { Resend } from 'resend';
 // import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
@@ -139,6 +140,61 @@ export class UserService {
     });
 
     await this.userRepository.save(newUser);
+  }
+
+  async forgotPassword(forgotPassword: ForgotPasswordDto) {
+    const user = await this.userRepository.findOne({ where: { email: forgotPassword.email } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const resetToken = await this.jwtService.signAsync(
+      { sub: user.id, email: user.email },
+      { expiresIn: '1h', secret: process.env.MY_SECRET_KEY },
+    );
+
+    const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+    await this.mailService.sendHTMLEmail({
+      to: forgotPassword.email,
+      subject: '📚 [Book Store] Đặt lại mật khẩu của bạn',
+      htmlContent: `
+      <h2>Xin chào ${user.name}!</h2>
+      <p>Vui lòng click vào nút bên dưới để đặt lại mật khẩu:</p>
+      <a href="${resetUrl}" style="background: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Đặt lại mật khẩu</a>
+      <p>Link này sẽ hết hạn sau 1 giờ.</p>
+    `,
+    });
+
+    return {
+      message: 'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư đến của bạn.',
+    };
+  }
+
+  async resetPassword(token: string, oldPassword: string, newPassword: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.MY_SECRET_KEY,
+      });
+
+      const user = await this.userRepository.findOne({ where: { id: payload.sub } });
+      if (!user) throw new NotFoundException('User not found');
+
+      const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+      if (!isOldPasswordValid) {
+        throw new UnauthorizedException('Old password is incorrect');
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedNewPassword;
+      await this.userRepository.save(user);
+
+      return {
+        message: 'Mật khẩu đã được đặt lại thành công.',
+      };
+    } catch (error) {
+      throw new BadRequestException('Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.');
+    }
   }
 
   async updateMyProfile(userId: number, userUpdateDto: Partial<User>) {

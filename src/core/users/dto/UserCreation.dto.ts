@@ -29,3 +29,17 @@ export class UpdateUserDto {
   @IsString()
   phone?: string;
 }
+
+export class UpdateUserPasswordDto {
+  @IsNotEmpty()
+  oldPassword: string;
+
+  @IsNotEmpty()
+  newPassword: string;
+}
+
+export class ForgotPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}

@@ -16,7 +16,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserCreationDto, UserSignInDto } from './dto/UserCreation.dto';
+import { ForgotPasswordDto, UserCreationDto, UserSignInDto } from './dto/UserCreation.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from './user.entities';
@@ -43,6 +43,20 @@ export class UserController {
     return await this.userService.verifyEmail(token);
   }
 
+  // @Post('resend-verification')
+  // async resendVerificationEmail(@Body('email') email: string) {
+  //   return await this.userService.resendVerificationEmail(email);
+  // }
+
+  @Post('forgot-password')
+  async resetPasswordRequest(@Body() forgotPasswordDTO: ForgotPasswordDto) {
+    return await this.userService.forgotPassword(forgotPasswordDTO);
+  }
+  @Post('reset-password')
+  async changePassword(@Body() body: { token: string; oldPassword: string; newPassword: string }) {
+    const { token, oldPassword, newPassword } = body;
+    return await this.userService.resetPassword(token, oldPassword, newPassword);
+  }
   @Get()
   getAllUsers() {
     return this.userService.getAllUsers();
