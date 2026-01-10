@@ -40,7 +40,9 @@ export class Order {
   @CreateDateColumn()
   orderDate: Date;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
+    cascade: true, // <--- THÊM DÒNG NÀY
+  })
   orderItems: OrderItem[];
 
   @OneToMany(() => Payment, (payment) => payment.order, { cascade: true })

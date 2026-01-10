@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '../entities/order.entities';
 import { In, Repository } from 'typeorm';
@@ -69,21 +69,32 @@ export class OrderService {
   }
 
   async createOrder(dto: CreateOrderDto): Promise<any> {
+    // 1. Tìm User
     const user = await this.userRepository.findOneBy({ id: dto.userId });
     if (!user) throw new NotFoundException('User not found');
 
     let totalAmount = 0;
     const items: OrderItem[] = [];
 
+    // 2. Duyệt qua từng item để check sách, tính tiền và TRỪ KHO luôn
     for (const item of dto.items) {
       const book = await this.bookRepository.findOneBy({ id: item.bookId });
       if (!book) throw new NotFoundException(`Book ${item.bookId} not found`);
+
+      // --- [QUAN TRỌNG] Check tồn kho và Trừ kho ---
+      if (Number(book.stockQuantity) < item.quantity) {
+        throw new BadRequestException(`Sách "${book.title}" không đủ số lượng tồn kho.`);
+      }
+
+      book.stockQuantity = String(Number(book.stockQuantity) - item.quantity);
+      await this.bookRepository.save(book);
+      // ---------------------------------------------
 
       const subTotal = Number(book.price) * item.quantity;
       totalAmount += subTotal;
 
       const orderItem = this.orderItemRepository.create({
-        book,
+        book, // TypeORM sẽ tự lấy ID
         quantity: item.quantity,
         price: book.price,
         subTotal,
@@ -91,31 +102,32 @@ export class OrderService {
       items.push(orderItem);
     }
 
-    // 🔹 Tạo Order
+    // 3. Tạo Order
     const order = this.orderRepository.create({
       totalAmount,
       user: { id: user.id },
       shippingAddressId: dto.shippingAddressId,
-      orderItems: items,
+      orderItems: items, // Nếu Entity Order có set cascade: true thì nó tự lưu orderItems
       orderDate: new Date(),
     });
 
     await this.orderRepository.save(order);
 
-    for (const orderItem of items) {
-      orderItem.order = order;
-      await this.orderItemRepository.save(orderItem);
-    }
+    // Nếu bạn không dùng cascade: true trong Entity, bạn cần lưu orderItems thủ công:
+    // for (const orderItem of items) {
+    //   orderItem.order = order;
+    //   await this.orderItemRepository.save(orderItem);
+    // }
 
-    // 🔹 Payment
+    // 4. Xử lý Payment (Phần này giữ nguyên logic của bạn)
     let payment: Payment;
     let checkoutUrl: string | null = null;
 
     if (dto.paymentMethod === 'PAYOS') {
-      const orderCode = `${Date.now()}${Math.floor(Math.random() * 1000)}`; // gọi PayOS để tạo link thanh toán
-      console.log(Number(orderCode));
+      const orderCode = Number(`${Date.now()}${Math.floor(Math.random() * 1000)}`.slice(0, 10)); // Cắt ngắn bớt để tránh tràn số
+
       const payosLink = await this.payosService.createPaymentLink(
-        Number(orderCode), // orderCode = id order
+        orderCode,
         totalAmount,
         `Thanh toán đơn hàng #${order.id}`,
       );
@@ -129,8 +141,8 @@ export class OrderService {
         status: 'UNPAID',
         createdAt: new Date(),
         updatedAt: new Date(),
-        payosOrderCode: orderCode,
-        transactionId: payosLink.paymentLinkId, // id từ PayOS
+        payosOrderCode: String(orderCode),
+        transactionId: payosLink.paymentLinkId,
       });
     } else {
       payment = this.paymentRepository.create({
@@ -145,15 +157,12 @@ export class OrderService {
 
     await this.paymentRepository.save(payment);
 
+    // 5. Trả về kết quả
     const foundOrder = await this.orderRepository.findOne({
       where: { id: order.id },
       relations: ['orderItems', 'payments'],
     });
-    if (!foundOrder) {
-      throw new NotFoundException('Order not found');
-    }
 
-    // Nếu là PayOS thì trả thêm checkoutUrl để FE redirect
     return {
       data: {
         order: foundOrder,
