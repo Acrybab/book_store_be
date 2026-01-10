@@ -14,6 +14,7 @@ import bcrypt from 'bcrypt';
 import { SupabaseService } from 'src/book/service/supabase.service';
 import { MailService } from 'src/common/services/mail.service';
 import { htmlContent } from 'src/common/services/htmlcontent';
+import { access } from 'fs';
 // import { Resend } from 'resend';
 // import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
@@ -90,7 +91,16 @@ export class UserService {
     `,
     });
 
-    return { message: 'Đăng ký thành công. Vui lòng kiểm tra email để kích hoạt tài khoản.' };
+    return {
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          userName: user.name,
+        },
+        accessToken: verifyToken,
+      },
+    };
   }
 
   async verifyEmail(token: string) {
