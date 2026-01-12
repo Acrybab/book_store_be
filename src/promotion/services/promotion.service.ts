@@ -4,7 +4,6 @@ import { Promotion } from '../entities/promotion.entities';
 import { Repository } from 'typeorm';
 import { AssignPromotionDto, CreatePromotionDto } from '../dto/promotion.dto';
 import { UserService } from 'src/core/users/user.service';
-import { BookService } from 'src/book/service/book.service';
 import { Book } from 'src/book/entities/book.entities';
 
 @Injectable()
@@ -15,8 +14,6 @@ export class PromotionService {
     @InjectRepository(Book)
     private bookRepository: Repository<Book>,
     private readonly userService: UserService,
-
-    private readonly bookService: BookService,
   ) {}
 
   async getPromotionsByCode(code: string) {
@@ -188,5 +185,20 @@ export class PromotionService {
         })),
       },
     };
+  }
+  async deletePromotion(discountId: number) {
+    const promotion = await this.promotionRepository.findOne({ where: { discountId } });
+    if (!promotion) {
+      throw new NotFoundException('Promotion not found');
+    }
+    return this.promotionRepository.remove(promotion);
+  }
+  async updatePromotion(discountId: number, updateData: Partial<CreatePromotionDto>) {
+    const promotion = await this.promotionRepository.findOne({ where: { discountId } });
+    if (!promotion) {
+      throw new NotFoundException('Promotion not found');
+    }
+    const updatedPromotion = Object.assign(promotion, updateData);
+    return this.promotionRepository.save(updatedPromotion);
   }
 }

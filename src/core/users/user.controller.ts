@@ -9,7 +9,6 @@ import {
   Query,
   Req,
   Request,
-  Response,
   UploadedFile,
   UseGuards,
   UseInterceptors,
