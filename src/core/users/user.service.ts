@@ -55,8 +55,8 @@ export class UserService {
   }
 
   async signUpWithEmailPassWord(userEntity: Partial<User>) {
-    const { email, password, name } = userEntity;
-
+    const { email, password, name, role } = userEntity;
+    console.log(role);
     const userExists = await this.findUserByEmail(email || '');
     if (userExists) {
       throw new BadRequestException('User already exists');
@@ -69,6 +69,7 @@ export class UserService {
       email,
       password: hashedPassword,
       name,
+      role: role,
       isVerified: false,
     });
     await this.userRepository.save(user); // Lưu trước để có ID
@@ -98,6 +99,7 @@ export class UserService {
           id: user.id,
           email: user.email,
           userName: user.name,
+          role: user.role,
         },
         accessToken: verifyToken,
       },

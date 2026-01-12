@@ -28,6 +28,8 @@ export class User {
   isVerified: boolean;
   @Column({ nullable: true })
   avatar: string;
+  @Column({ nullable: true, default: 'user' })
+  role: string;
   @Exclude()
   @Column({ nullable: true })
   confirmPassword: string;

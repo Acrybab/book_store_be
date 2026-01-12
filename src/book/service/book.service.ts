@@ -69,7 +69,7 @@ export class BookService {
     const query = this.bookRepository
       .createQueryBuilder('book')
       .leftJoinAndSelect('book.categories', 'categories')
-      // .leftJoinAndSelect('book.ratings', 'ratings')
+      .leftJoinAndSelect('book.promotions', 'promotions')
       .leftJoinAndSelect('book.reviews', 'reviews')
       .skip(skip)
       .take(limit)
